@@ -70,6 +70,29 @@
 
   <div class="footer">&copy; 2025 | Gerência de Tecnologias Educacionais</div>
 
+  <!-- Modal de Confirmação - Adicionar Avaliador -->
+  <div id="modal-confirmacao-adicionar" class="modal">
+    <div class="modal-content">
+      <h3><img src="alert-icon.png" alt="Atenção"> Confirmação</h3>
+      <p id="modal-mensagem-adicionar"></p> <!-- Mensagem personalizada -->
+      <div class="modal-buttons">
+        <button id="btn-ok-adicionar" class="btn">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Confirmação - Excluir Avaliador -->
+  <div id="modal-confirmacao-excluir" class="modal">
+    <div class="modal-content">
+      <h3><img src="alert-icon.png" alt="Atenção"> Confirmação</h3>
+      <p id="modal-mensagem-excluir"></p> <!-- Mensagem personalizada -->
+      <div class="modal-buttons">
+        <button id="btn-sim" class="btn">Sim</button>
+        <button id="btn-nao" class="btn">Não</button>
+      </div>
+    </div>
+  </div>
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
@@ -104,8 +127,8 @@
     }
 
     window.excluirAvaliador = async function (id) {
-      await deleteDoc(doc(db, "avaliadores", id));
-      carregarAvaliadores();
+      const nome = document.getElementById(`tabela-avaliadores-${id}`).textContent; // get the name of the evaluator
+      abrirModalExcluir(nome); // open the confirmation modal for deleting the evaluator
     }
 
     window.adicionarAvaliador = async function () {
@@ -119,11 +142,11 @@
       }
 
       await addDoc(collection(db, "avaliadores"), { nome, usuario, senha });
-      alert("Avaliador adicionado!");
+      abrirModalAdicionar("Avaliador adicionado com sucesso!"); // Exibe a mensagem de sucesso
       document.getElementById("nome").value = '';
       document.getElementById("usuario").value = '';
       document.getElementById("senha").value = '';
-      carregarAvaliadores();
+      carregarAvaliadores(); // Atualiza a lista de avaliadores
     }
 
     window.adicionarProjeto = async function () {
@@ -163,6 +186,41 @@
       });
       carregarAvaliadores();
     });
+
+    // Função para abrir o modal de adicionar avaliador
+    function abrirModalAdicionar(mensagem) {
+      const modal = document.getElementById('modal-confirmacao-adicionar');
+      const mensagemModal = document.getElementById('modal-mensagem-adicionar');
+      mensagemModal.textContent = mensagem;  // Define a mensagem de sucesso
+      modal.style.display = 'flex';
+
+      // Botão OK para fechar o modal
+      document.getElementById('btn-ok-adicionar').onclick = fecharModal;
+    }
+
+    // Função para abrir o modal de excluir avaliador
+    function abrirModalExcluir(nome) {
+      const modal = document.getElementById('modal-confirmacao-excluir');
+      const mensagemModal = document.getElementById('modal-mensagem-excluir');
+      mensagemModal.textContent = `Tem certeza que deseja excluir o avaliador "${nome}"?`;  // Mensagem de confirmação
+      modal.style.display = 'flex';
+
+      // Botões para confirmar ou cancelar a exclusão
+      document.getElementById('btn-sim').onclick = function() {
+        excluirAvaliador(nome); // Exclui o avaliador
+        fecharModal();
+      };
+
+      document.getElementById('btn-nao').onclick = fecharModal;
+    }
+
+    // Função para fechar o modal
+    function fecharModal() {
+      const modalAdicionar = document.getElementById('modal-confirmacao-adicionar');
+      const modalExcluir = document.getElementById('modal-confirmacao-excluir');
+      modalAdicionar.style.display = 'none';
+      modalExcluir.style.display = 'none';
+    }
   </script>
 </body>
 </html>
