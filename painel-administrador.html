@@ -144,8 +144,8 @@
         const tr = document.createElement("tr");
         tr.innerHTML = `
           <td>${data.nome}</td>
-          <td>${data.usuario}</td>
-          <td><span class="delete" onclick="removerAvaliador('${docSnap.id}')">🗑️</span></td>
+<td>${data.usuario}</td>
+<td><span class="delete" data-id="${docSnap.id}" data-tipo="avaliador">🗑️</span></td>
         `;
         tabela.appendChild(tr);
       });
@@ -179,9 +179,9 @@
         const tr = document.createElement("tr");
         tr.innerHTML = `
           <td>${data.nome}</td>
-          <td>${data.escola}</td>
-          <td>${data.nivel}</td>
-          <td><span class="delete" onclick="removerProjeto('${docSnap.id}')">🗑️</span></td>
+<td>${data.escola}</td>
+<td>${data.nivel}</td>
+<td><span class="delete" data-id="${docSnap.id}" data-tipo="projeto">🗑️</span></td>
         `;
         tabela.appendChild(tr);
       });
@@ -215,10 +215,10 @@
         const tr = document.createElement("tr");
         tr.innerHTML = `
           <td>${data.projeto}</td>
-          <td>${data.avaliador}</td>
-          <td>${data.nota}</td>
-          <td>${data.comentario || "-"}</td>
-          <td><span class="delete" onclick="removerAvaliacao('${docSnap.id}')">🗑️</span></td>
+<td>${data.avaliador}</td>
+<td>${data.nota}</td>
+<td>${data.comentario || "-"}</td>
+<td><span class="delete" data-id="${docSnap.id}" data-tipo="avaliacao">🗑️</span></td>
         `;
         tabela.appendChild(tr);
       });
@@ -243,6 +243,29 @@
     }
 
     document.addEventListener("DOMContentLoaded", () => {
+  document.body.addEventListener("click", (e) => {
+    if (e.target.classList.contains("delete")) {
+      const id = e.target.dataset.id;
+      const tipo = e.target.dataset.tipo;
+
+      if (tipo === "avaliador") {
+        confirmarAcao("Deseja realmente excluir este avaliador?", async () => {
+          await deleteDoc(doc(db, "avaliadores", id));
+          carregarAvaliadores();
+        });
+      } else if (tipo === "projeto") {
+        confirmarAcao("Deseja excluir este projeto?", async () => {
+          await deleteDoc(doc(db, "projetos", id));
+          carregarProjetos();
+        });
+      } else if (tipo === "avaliacao") {
+        confirmarAcao("Deseja remover esta avaliação?", async () => {
+          await deleteDoc(doc(db, "avaliacoes", id));
+          carregarAvaliacoes();
+        });
+      }
+    }
+  });
       document.querySelectorAll(".tab").forEach(tab => {
         tab.addEventListener("click", () => {
           const aba = tab.getAttribute("data-aba");
