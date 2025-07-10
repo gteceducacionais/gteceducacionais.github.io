@@ -58,27 +58,33 @@
     const db = getFirestore(app);
 
     function confirmarAcao(mensagem, aoConfirmar) {
-      const modal = document.getElementById("confirm-modal");
-      const texto = document.getElementById("confirm-text");
-      const btnConfirmar = document.getElementById("btn-confirmar");
-      const btnCancelar = document.getElementById("btn-cancelar");
+  const modal = document.getElementById("confirm-modal");
+  const texto = document.getElementById("confirm-text");
+  const btnConfirmar = document.getElementById("btn-confirmar");
+  const btnCancelar = document.getElementById("btn-cancelar");
 
-      texto.textContent = mensagem;
-      modal.classList.remove("hidden");
+  texto.textContent = mensagem;
+  modal.classList.remove("hidden");
 
-      const confirmar = () => {
-        modal.classList.add("hidden");
-        aoConfirmar();
-        btnConfirmar.removeEventListener("click", confirmar);
-      };
+  const confirmar = async () => {
+    modal.classList.add("hidden");
+    await aoConfirmar();
+    removerEventos();
+  };
 
-      const cancelar = () => {
-        modal.classList.add("hidden");
-        btnConfirmar.removeEventListener("click", confirmar);
-      };
+  const cancelar = () => {
+    modal.classList.add("hidden");
+    removerEventos();
+  };
 
-      btnConfirmar.addEventListener("click", confirmar);
-      btnCancelar.addEventListener("click", cancelar);
+  function removerEventos() {
+    btnConfirmar.removeEventListener("click", confirmar);
+    btnCancelar.removeEventListener("click", cancelar);
+  }
+
+  btnConfirmar.addEventListener("click", confirmar);
+  btnCancelar.addEventListener("click", cancelar);
+}
     }
 
     async function carregarAvaliadores() {
