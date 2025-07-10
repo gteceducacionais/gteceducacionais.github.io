@@ -66,24 +66,22 @@
   texto.textContent = mensagem;
   modal.classList.remove("hidden");
 
-  const confirmar = async () => {
+  // Limpa eventos anteriores
+  btnConfirmar.onclick = null;
+  btnCancelar.onclick = null;
+
+  btnConfirmar.onclick = async () => {
     modal.classList.add("hidden");
-    await aoConfirmar();
-    removerEventos();
+    try {
+      await aoConfirmar();
+    } catch (err) {
+      console.error("Erro ao confirmar ação:", err);
+    }
   };
 
-  const cancelar = () => {
+  btnCancelar.onclick = () => {
     modal.classList.add("hidden");
-    removerEventos();
   };
-
-  function removerEventos() {
-    btnConfirmar.removeEventListener("click", confirmar);
-    btnCancelar.removeEventListener("click", cancelar);
-  }
-
-  btnConfirmar.addEventListener("click", confirmar);
-  btnCancelar.addEventListener("click", cancelar);
 }
 
     async function carregarAvaliadores() {
