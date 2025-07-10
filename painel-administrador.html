@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Painel de Administração</title>
   <style>
     body { margin: 0; font-family: Arial, sans-serif; background-color: #f1f5f9; }
@@ -29,14 +29,19 @@
   </style>
 </head>
 <body>
-  <div class="header">Painel de Administração <a class="logout" href="index.html" style="float: right; font-size:14px">&#x1F6AA; Sair</a></div>
+  <div class="header">
+    Painel de Administração 
+    <a class="logout" href="index.html" style="float: right; font-size:14px">&#x1F6AA; Sair</a>
+  </div>
 
   <div class="tabs">
     <div class="tab active" data-aba="avaliadores">Gerenciar Avaliadores</div>
     <div class="tab" data-aba="projetos">Gerenciar Projetos</div>
+    <div class="tab" data-aba="avaliacoes">Avaliações Salvas</div>
   </div>
 
   <div class="content">
+    <!-- Aba Avaliadores -->
     <div class="card aba" id="aba-avaliadores">
       <h3 style="color: #1e3a8a">Avaliadores Cadastrados</h3>
       <table>
@@ -52,8 +57,13 @@
       <button class="btn" onclick="adicionarAvaliador()">Adicionar Avaliador</button>
     </div>
 
+    <!-- Aba Projetos -->
     <div class="card aba hidden" id="aba-projetos">
       <h3 style="color: #1e3a8a">Projetos Cadastrados</h3>
+      <table>
+        <thead><tr><th>Título</th><th>Escola</th><th>Nível</th><th>Ações</th></tr></thead>
+        <tbody id="tabela-projetos"></tbody>
+      </table>
       <div class="form-grid">
         <input type="text" id="tituloProjeto" placeholder="Título do projeto">
         <input type="text" id="escolaProjeto" placeholder="Nome da escola">
@@ -66,33 +76,20 @@
       </div>
       <button class="btn" onclick="adicionarProjeto()">Adicionar Projeto</button>
     </div>
+
+    <!-- Aba Avaliações -->
+    <div class="card aba hidden" id="aba-avaliacoes">
+      <h3 style="color: #1e3a8a">Avaliações Realizadas</h3>
+      <table>
+        <thead><tr><th>Projeto</th><th>Avaliador</th><th>Nota</th><th>Comentário</th><th>Ações</th></tr></thead>
+        <tbody id="tabela-avaliacoes"></tbody>
+      </table>
+    </div>
   </div>
 
   <div class="footer">&copy; 2025 | Gerência de Tecnologias Educacionais</div>
 
-  <!-- Modal de Confirmação - Adicionar Avaliador -->
-  <div id="modal-confirmacao-adicionar" class="modal">
-    <div class="modal-content">
-      <h3><img src="alert-icon.png" alt="Atenção"> Confirmação</h3>
-      <p id="modal-mensagem-adicionar"></p> <!-- Mensagem personalizada -->
-      <div class="modal-buttons">
-        <button id="btn-ok-adicionar" class="btn">OK</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal de Confirmação - Excluir Avaliador -->
-  <div id="modal-confirmacao-excluir" class="modal">
-    <div class="modal-content">
-      <h3><img src="alert-icon.png" alt="Atenção"> Confirmação</h3>
-      <p id="modal-mensagem-excluir"></p> <!-- Mensagem personalizada -->
-      <div class="modal-buttons">
-        <button id="btn-sim" class="btn">Sim</button>
-        <button id="btn-nao" class="btn">Não</button>
-      </div>
-    </div>
-  </div>
-
+  <!-- IMPORTANTE: use esse arquivo dentro de um servidor local (ex: Live Server) para evitar erros com ES modules -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
@@ -101,18 +98,17 @@
       apiKey: "AIzaSyAq3c957QKO6Ygq-f0NwDXWmuwZxkjNe1c",
       authDomain: "seducitarema-185aa.firebaseapp.com",
       projectId: "seducitarema-185aa",
-      storageBucket: "seducitarema-185aa.firebasestorage.app",
+      storageBucket: "seducitarema-185aa.appspot.com",
       messagingSenderId: "345071170470",
-      appId: "1:345071170470:web:469ab81b881e91dd4a1567",
-      measurementId: "G-QLP55M1SBT"
+      appId: "1:345071170470:web:469ab81b881e91dd4a1567"
     };
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
     async function carregarAvaliadores() {
-      const tabela = document.getElementById('tabela-avaliadores');
-      tabela.innerHTML = '';
+      const tabela = document.getElementById("tabela-avaliadores");
+      tabela.innerHTML = "";
       const querySnapshot = await getDocs(collection(db, "avaliadores"));
       querySnapshot.forEach((docSnap) => {
         const data = docSnap.data();
@@ -120,107 +116,109 @@
         tr.innerHTML = `
           <td>${data.nome}</td>
           <td>${data.usuario}</td>
-          <td><span class="delete" onclick="excluirAvaliador('${docSnap.id}')">🗑️</span></td>
+          <td><span class="delete" onclick="removerAvaliador('${docSnap.id}')">🗑️</span></td>
         `;
         tabela.appendChild(tr);
       });
     }
 
-    window.excluirAvaliador = async function (id) {
-      const nome = document.getElementById(`tabela-avaliadores-${id}`).textContent; // get the name of the evaluator
-      abrirModalExcluir(nome); // open the confirmation modal for deleting the evaluator
+    async function removerAvaliador(id) {
+      await deleteDoc(doc(db, "avaliadores", id));
+      carregarAvaliadores();
     }
 
     window.adicionarAvaliador = async function () {
-      const nome = document.getElementById("nome").value;
-      const usuario = document.getElementById("usuario").value;
-      const senha = document.getElementById("senha").value;
-
-      if (!nome || !usuario || !senha) {
-        alert("Preencha todos os campos.");
-        return;
-      }
-
+      const nome = document.getElementById("nome").value.trim();
+      const usuario = document.getElementById("usuario").value.trim();
+      const senha = document.getElementById("senha").value.trim();
+      if (!nome || !usuario || !senha) return alert("Preencha todos os campos.");
+      
+      // ATENÇÃO: em produção, use Firebase Authentication em vez de salvar senhas diretamente!
       await addDoc(collection(db, "avaliadores"), { nome, usuario, senha });
-      abrirModalAdicionar("Avaliador adicionado com sucesso!"); // Exibe a mensagem de sucesso
-      document.getElementById("nome").value = '';
-      document.getElementById("usuario").value = '';
-      document.getElementById("senha").value = '';
-      carregarAvaliadores(); // Atualiza a lista de avaliadores
+      document.getElementById("nome").value = "";
+      document.getElementById("usuario").value = "";
+      document.getElementById("senha").value = "";
+      carregarAvaliadores();
+    };
+
+    async function carregarProjetos() {
+      const tabela = document.getElementById("tabela-projetos");
+      tabela.innerHTML = "";
+      const querySnapshot = await getDocs(collection(db, "projetos"));
+      querySnapshot.forEach((docSnap) => {
+        const data = docSnap.data();
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${data.nome}</td>
+          <td>${data.escola}</td>
+          <td>${data.nivel}</td>
+          <td><span class="delete" onclick="removerProjeto('${docSnap.id}')">🗑️</span></td>
+        `;
+        tabela.appendChild(tr);
+      });
     }
 
     window.adicionarProjeto = async function () {
-      const titulo = document.getElementById("tituloProjeto").value;
-      const escola = document.getElementById("escolaProjeto").value;
-      const nivel = document.getElementById("nivelProjeto").value;
+      const titulo = document.getElementById("tituloProjeto").value.trim();
+      const escola = document.getElementById("escolaProjeto").value.trim();
+      const nivel = document.getElementById("nivelProjeto").value.trim();
+      if (!titulo || !escola || !nivel) return alert("Preencha todos os campos.");
+      await addDoc(collection(db, "projetos"), { nome: titulo, escola, nivel });
+      document.getElementById("tituloProjeto").value = "";
+      document.getElementById("escolaProjeto").value = "";
+      document.getElementById("nivelProjeto").value = "";
+      carregarProjetos();
+    };
 
-      if (!titulo || !escola || !nivel) {
-        alert("Preencha todos os campos.");
-        return;
-      }
+    async function removerProjeto(id) {
+      await deleteDoc(doc(db, "projetos", id));
+      carregarProjetos();
+    }
 
-      await addDoc(collection(db, "projetos"), {
-        nome: titulo,
-        escola,
-        nivel
+    async function carregarAvaliacoes() {
+      const tabela = document.getElementById("tabela-avaliacoes");
+      tabela.innerHTML = "";
+      const querySnapshot = await getDocs(collection(db, "avaliacoes"));
+      querySnapshot.forEach((docSnap) => {
+        const data = docSnap.data();
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${data.projeto}</td>
+          <td>${data.avaliador}</td>
+          <td>${data.nota}</td>
+          <td>${data.comentario || "-"}</td>
+          <td><span class="delete" onclick="removerAvaliacao('${docSnap.id}')">🗑️</span></td>
+        `;
+        tabela.appendChild(tr);
       });
-      alert("Projeto adicionado!");
-      document.getElementById("tituloProjeto").value = '';
-      document.getElementById("escolaProjeto").value = '';
-      document.getElementById("nivelProjeto").value = '';
     }
 
-    window.trocarAba = function(aba) {
-      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-      document.querySelectorAll('.aba').forEach(c => c.classList.add('hidden'));
-      document.querySelector(`.tab[data-aba="${aba}"]`).classList.add('active');
-      document.getElementById(`aba-${aba}`).classList.remove('hidden');
+    async function removerAvaliacao(id) {
+      await deleteDoc(doc(db, "avaliacoes", id));
+      carregarAvaliacoes();
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-      document.querySelectorAll('.tab').forEach(tab => {
-        tab.addEventListener('click', () => {
-          const aba = tab.getAttribute('data-aba');
-          window.trocarAba(aba);
+    function trocarAba(aba) {
+      document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+      document.querySelectorAll(".aba").forEach(c => c.classList.add("hidden"));
+      document.querySelector(`.tab[data-aba="${aba}"]`).classList.add("active");
+      document.getElementById(`aba-${aba}`).classList.remove("hidden");
+
+      if (aba === "avaliadores") carregarAvaliadores();
+      if (aba === "projetos") carregarProjetos();
+      if (aba === "avaliacoes") carregarAvaliacoes();
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      document.querySelectorAll(".tab").forEach(tab => {
+        tab.addEventListener("click", () => {
+          const aba = tab.getAttribute("data-aba");
+          trocarAba(aba);
         });
       });
-      carregarAvaliadores();
+      const abaInicial = document.querySelector(".tab.active").getAttribute("data-aba");
+      trocarAba(abaInicial);
     });
-
-    // Função para abrir o modal de adicionar avaliador
-    function abrirModalAdicionar(mensagem) {
-      const modal = document.getElementById('modal-confirmacao-adicionar');
-      const mensagemModal = document.getElementById('modal-mensagem-adicionar');
-      mensagemModal.textContent = mensagem;  // Define a mensagem de sucesso
-      modal.style.display = 'flex';
-
-      // Botão OK para fechar o modal
-      document.getElementById('btn-ok-adicionar').onclick = fecharModal;
-    }
-
-    // Função para abrir o modal de excluir avaliador
-    function abrirModalExcluir(nome) {
-      const modal = document.getElementById('modal-confirmacao-excluir');
-      const mensagemModal = document.getElementById('modal-mensagem-excluir');
-      mensagemModal.textContent = `Tem certeza que deseja excluir o avaliador "${nome}"?`;  // Mensagem de confirmação
-      modal.style.display = 'flex';
-
-      // Botões para confirmar ou cancelar a exclusão
-      document.getElementById('btn-sim').onclick = function() {
-        excluirAvaliador(nome); // Exclui o avaliador
-        fecharModal();
-      };
-
-      document.getElementById('btn-nao').onclick = fecharModal;
-    }
-
-    // Função para fechar o modal
-    function fecharModal() {
-      const modalAdicionar = document.getElementById('modal-confirmacao-adicionar');
-      const modalExcluir = document.getElementById('modal-confirmacao-excluir');
-      modalAdicionar.style.display = 'none';
-      modalExcluir.style.display = 'none';
-    }
   </script>
 </body>
 </html>
