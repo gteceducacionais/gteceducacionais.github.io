@@ -89,7 +89,21 @@
 
   <div class="footer">&copy; 2025 | Gerência de Tecnologias Educacionais</div>
 
-  <!-- IMPORTANTE: use esse arquivo dentro de um servidor local (ex: Live Server) para evitar erros com ES modules -->
+  <!-- Modal de Confirmação -->
+  <div id="confirm-modal" class="hidden" style="
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.4); display: flex; align-items: center; justify-content: center; z-index: 9999;
+  ">
+    <div style="background: white; padding: 20px 30px; border-radius: 10px; max-width: 400px; box-shadow: 0 2px 10px rgba(0,0,0,0.3); text-align: center;">
+      <p id="confirm-text" style="font-size: 16px; color: #1e3a8a; font-weight: bold;">Tem certeza?</p>
+      <div style="margin-top: 20px;">
+        <button id="btn-cancelar" class="btn" style="background-color: #6b7280;">Cancelar</button>
+        <button id="btn-confirmar" class="btn" style="margin-left: 12px;">Confirmar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Script principal -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
@@ -105,6 +119,30 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
+
+    function confirmarAcao(mensagem, aoConfirmar) {
+      const modal = document.getElementById("confirm-modal");
+      const texto = document.getElementById("confirm-text");
+      const btnConfirmar = document.getElementById("btn-confirmar");
+      const btnCancelar = document.getElementById("btn-cancelar");
+
+      texto.textContent = mensagem;
+      modal.classList.remove("hidden");
+
+      const confirmar = () => {
+        modal.classList.add("hidden");
+        aoConfirmar();
+        btnConfirmar.removeEventListener("click", confirmar);
+      };
+
+      const cancelar = () => {
+        modal.classList.add("hidden");
+        btnConfirmar.removeEventListener("click", confirmar);
+      };
+
+      btnConfirmar.addEventListener("click", confirmar);
+      btnCancelar.addEventListener("click", cancelar);
+    }
 
     async function carregarAvaliadores() {
       const tabela = document.getElementById("tabela-avaliadores");
@@ -123,8 +161,10 @@
     }
 
     async function removerAvaliador(id) {
-      await deleteDoc(doc(db, "avaliadores", id));
-      carregarAvaliadores();
+      confirmarAcao("Deseja realmente excluir este avaliador?", async () => {
+        await deleteDoc(doc(db, "avaliadores", id));
+        carregarAvaliadores();
+      });
     }
 
     window.adicionarAvaliador = async function () {
@@ -132,8 +172,6 @@
       const usuario = document.getElementById("usuario").value.trim();
       const senha = document.getElementById("senha").value.trim();
       if (!nome || !usuario || !senha) return alert("Preencha todos os campos.");
-      
-      // ATENÇÃO: em produção, use Firebase Authentication em vez de salvar senhas diretamente!
       await addDoc(collection(db, "avaliadores"), { nome, usuario, senha });
       document.getElementById("nome").value = "";
       document.getElementById("usuario").value = "";
@@ -158,6 +196,13 @@
       });
     }
 
+    async function removerProjeto(id) {
+      confirmarAcao("Deseja excluir este projeto?", async () => {
+        await deleteDoc(doc(db, "projetos", id));
+        carregarProjetos();
+      });
+    }
+
     window.adicionarProjeto = async function () {
       const titulo = document.getElementById("tituloProjeto").value.trim();
       const escola = document.getElementById("escolaProjeto").value.trim();
@@ -169,11 +214,6 @@
       document.getElementById("nivelProjeto").value = "";
       carregarProjetos();
     };
-
-    async function removerProjeto(id) {
-      await deleteDoc(doc(db, "projetos", id));
-      carregarProjetos();
-    }
 
     async function carregarAvaliacoes() {
       const tabela = document.getElementById("tabela-avaliacoes");
@@ -194,8 +234,10 @@
     }
 
     async function removerAvaliacao(id) {
-      await deleteDoc(doc(db, "avaliacoes", id));
-      carregarAvaliacoes();
+      confirmarAcao("Deseja remover esta avaliação?", async () => {
+        await deleteDoc(doc(db, "avaliacoes", id));
+        carregarAvaliacoes();
+      });
     }
 
     function trocarAba(aba) {
