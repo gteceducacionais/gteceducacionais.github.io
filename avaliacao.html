@@ -261,42 +261,46 @@
     document.getElementById("nivel").textContent = dados.nivel;
     document.getElementById("avaliador").textContent = nomeAvaliador;
 
-    document.getElementById("form-avaliacao").addEventListener("submit", async function (e) {
-      e.preventDefault();
+    
+document.getElementById("form-avaliacao").addEventListener("submit", async function (e) {
+  e.preventDefault();
 
-      const avaliacao = {
-        ...dados,
-        nomeAvaliador,
-        criterio1: +this.criterio1.value,
-        criterio2: +this.criterio2.value,
-        criterio3: +this.criterio3.value,
-        criterio4: +this.criterio4.value,
-        criterio5: +this.criterio5.value,
-        criterio6: +this.criterio6.value,
-        criterio7: +this.criterio7.value,
-        criterio8: +this.criterio8.value,
-        comentario: this.comentario.value.trim(),
-        criadoEm: new Date().toISOString(),
-        nota:
-          +this.criterio1.value +
-          +this.criterio2.value +
-          +this.criterio3.value +
-          +this.criterio4.value +
-          +this.criterio5.value +
-          +this.criterio6.value +
-          +this.criterio7.value +
-          +this.criterio8.value
-      };
+  const get = name => +this.querySelector(`[name="${name}"]`).value;
 
-      try {
-        await addDoc(collection(db, "avaliacoes"), avaliacao);
-        alert("Avaliação salva com sucesso!");
-        window.location.href = "avaliador.html";
-      } catch (err) {
-        console.error("Erro ao salvar avaliação:", err);
-        alert("Erro ao salvar avaliação. Tente novamente.");
-      }
-    });
+  const avaliacao = {
+    ...dados,
+    nomeAvaliador,
+    criterio1: get("criterio1"),
+    criterio2: get("criterio2"),
+    criterio3: get("criterio3"),
+    criterio4: get("criterio4"),
+    criterio5: get("criterio5"),
+    criterio6: get("criterio6"),
+    criterio7: get("criterio7"),
+    criterio8: get("criterio8"),
+    comentario: this.querySelector("[name='comentario']").value.trim(),
+    criadoEm: new Date().toISOString(),
+    nota:
+      get("criterio1") +
+      get("criterio2") +
+      get("criterio3") +
+      get("criterio4") +
+      get("criterio5") +
+      get("criterio6") +
+      get("criterio7") +
+      get("criterio8")
+  };
+
+  try {
+    await addDoc(collection(db, "avaliacoes"), avaliacao);
+    alert("Avaliação salva com sucesso!");
+    window.location.href = "avaliador.html";
+  } catch (err) {
+    console.error("Erro ao salvar avaliação:", err);
+    alert("Erro ao salvar avaliação. Tente novamente.");
+  }
+});
+
   </script>
 </body>
 </html>
