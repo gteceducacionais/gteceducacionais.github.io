@@ -192,12 +192,6 @@ body.dark-mode .total-geral {
   color: #f1f5f9;
   border-color: #475569;
 }
-
-body.dark-mode .resumo div {
-  color: #03274a;
-  background-color: #1e293b;
-  border-color: #475569;
-}
 .resumo-item {
   flex: 1;
   background-color: white;
