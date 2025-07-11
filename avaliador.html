@@ -90,9 +90,9 @@
     <input type="text" id="nivel" readonly>
 
     <button id="iniciar">Iniciar Avaliação</button>
-  </div>
-
-  <div class="footer">
+  <p id="avaliador-nome" style="text-align: center; font-size: 14px; color: #1e3a8a; font-weight: bold;"></p>
+</div>
+<div class="footer">
     &copy; 2025 | Gerência de Tecnologias Educacionais
   </div>
 
@@ -135,7 +135,16 @@
       nivelInput.value = selected.dataset.nivel || "";
     });
 
-    document.addEventListener("DOMContentLoaded", carregarProjetos);
+    document.addEventListener("DOMContentLoaded", () => {
+  const nomeAvaliador = localStorage.getItem("avaliadorLogado");
+  if (!nomeAvaliador) {
+    alert("Acesso não autorizado. Faça login novamente.");
+    window.location.href = "index.html";
+    return;
+  }
+  document.getElementById("avaliador-nome").textContent = `Avaliador: ${nomeAvaliador}`;
+  carregarProjetos();
+});
   </script>
 </body>
 </html>
