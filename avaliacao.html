@@ -107,11 +107,14 @@
         <p><strong>Pontuação Total da Seção 3:</strong> <span id="total3">3</span></p>
       </section>
 
-      <section>
-        <h2>Resumo da Avaliação</h2>
-        <p>Seção 1: <span id="r1">2</span> | Seção 2: <span id="r2">3</span> | Seção 3: <span id="r3">3</span></p>
-        <h3>TOTAL GERAL: <span id="total">8</span></h3>
-      </section>
+      $1
+      <div class="resumo">
+        <div>Seção 1<br><span id="r1">2</span></div>
+        <div>Seção 2<br><span id="r2">3</span></div>
+        <div>Seção 3<br><span id="r3">3</span></div>
+        <div>Total<br><span id="total">8</span></div>
+      </div>
+    </section>
 
       <label>Comentário</label>
       <textarea name="comentario" rows="4" style="width:100%; margin-bottom: 16px;"></textarea>
@@ -161,15 +164,27 @@
   const criterio1 = parseInt(this.criterio1.value);
   const criterio2 = parseInt(this.criterio2.value);
   const criterio3 = parseInt(this.criterio3.value);
+  const criterio4 = parseInt(this.criterio4.value);
+  const criterio5 = parseInt(this.criterio5.value);
+  const criterio6 = parseInt(this.criterio6.value);
+  const criterio7 = parseInt(this.criterio7.value);
+  const criterio8 = parseInt(this.criterio8.value);
   const comentario = this.comentario.value.trim();
+
+  const notaTotal = criterio1 + criterio2 + criterio3 + criterio4 + criterio5 + criterio6 + criterio7 + criterio8;
 
   const avaliacao = {
     ...dados,
     criterio1,
     criterio2,
     criterio3,
+    criterio4,
+    criterio5,
+    criterio6,
+    criterio7,
+    criterio8,
     comentario,
-    notaTotal: criterio1 + criterio2 + criterio3,
+    notaTotal,
     criadoEm: new Date().toISOString()
   };
 
