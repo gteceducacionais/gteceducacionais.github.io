@@ -26,10 +26,7 @@
     .btn { background-color: #16a34a; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-size: 14px; cursor: pointer; margin-top: 12px; }
     .delete { color: red; cursor: pointer; font-size: 18px; }
     .hidden { display: none; }
-
-    #confirm-modal.hidden {
-      display: none !important;
-    }
+    #confirm-modal.hidden { display: none !important; }
   </style>
 </head>
 <body>
@@ -86,7 +83,7 @@
     </div>
   </div>
 
-  <!-- Modal de Confirmação -->
+  <!-- Modal -->
   <div id="confirm-modal" class="hidden" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.4); display: flex; align-items: center; justify-content: center; z-index: 9999;">
     <div style="background: white; padding: 20px 30px; border-radius: 10px; max-width: 400px; box-shadow: 0 2px 10px rgba(0,0,0,0.3); text-align: center;">
       <p id="confirm-text" style="font-size: 16px; color: #1e3a8a; font-weight: bold;">Tem certeza?</p>
@@ -124,7 +121,7 @@
 
       btnConfirmar.onclick = async () => {
         modal.classList.add("hidden");
-        try { await aoConfirmar(); } catch (err) { console.error("Erro ao confirmar ação:", err); }
+        try { await aoConfirmar(); } catch (err) { console.error("Erro:", err); }
       };
       btnCancelar.onclick = () => modal.classList.add("hidden");
     }
@@ -136,11 +133,7 @@
       querySnapshot.forEach((docSnap) => {
         const data = docSnap.data();
         const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${data.nome}</td>
-          <td>${data.usuario}</td>
-          <td><span class="delete" data-id="${docSnap.id}" data-tipo="avaliador">🗑️</span></td>
-        `;
+        tr.innerHTML = `<td>${data.nome}</td><td>${data.usuario}</td><td><span class="delete" data-id="${docSnap.id}" data-tipo="avaliador">🗑️</span></td>`;
         tabela.appendChild(tr);
       });
     }
@@ -152,12 +145,7 @@
       querySnapshot.forEach((docSnap) => {
         const data = docSnap.data();
         const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${data.nome}</td>
-          <td>${data.escola}</td>
-          <td>${data.nivel}</td>
-          <td><span class="delete" data-id="${docSnap.id}" data-tipo="projeto">🗑️</span></td>
-        `;
+        tr.innerHTML = `<td>${data.nome}</td><td>${data.escola}</td><td>${data.nivel}</td><td><span class="delete" data-id="${docSnap.id}" data-tipo="projeto">🗑️</span></td>`;
         tabela.appendChild(tr);
       });
     }
@@ -172,7 +160,7 @@
         tr.innerHTML = `
           <td>${data.projeto}</td>
           <td>${data.nomeAvaliador || data.avaliador}</td>
-          <td>${data.nota}</td>
+          <td>${typeof data.nota === 'number' ? data.nota : parseInt(data.nota) || 0}</td>
           <td>${data.comentario || "-"}</td>
           <td><span class="delete" data-id="${docSnap.id}" data-tipo="avaliacao">🗑️</span></td>
         `;
@@ -180,65 +168,76 @@
       });
     }
 
-    window.adicionarAvaliador = async function () {
-      const nome = document.getElementById("nome").value.trim();
-      const usuario = document.getElementById("usuario").value.trim();
-      const senha = document.getElementById("senha").value.trim();
-      if (!nome || !usuario || !senha) return alert("Preencha todos os campos.");
-      await addDoc(collection(db, "avaliadores"), { nome, usuario, senha });
-      document.getElementById("nome").value = "";
-      document.getElementById("usuario").value = "";
-      document.getElementById("senha").value = "";
-      carregarAvaliadores();
-    };
-
-    window.adicionarProjeto = async function () {
-      const titulo = document.getElementById("tituloProjeto").value.trim();
-      const escola = document.getElementById("escolaProjeto").value.trim();
-      const nivel = document.getElementById("nivelProjeto").value.trim();
-      if (!titulo || !escola || !nivel) return alert("Preencha todos os campos.");
-      await addDoc(collection(db, "projetos"), { nome: titulo, escola, nivel });
-      document.getElementById("tituloProjeto").value = "";
-      document.getElementById("escolaProjeto").value = "";
-      document.getElementById("nivelProjeto").value = "";
-      carregarProjetos();
-    };
-
-    function trocarAba(aba) {
-      document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
-      document.querySelectorAll(".aba").forEach(c => c.classList.add("hidden"));
-      document.querySelector(`.tab[data-aba="${aba}"]`).classList.add("active");
-      document.getElementById(`aba-${aba}`).classList.remove("hidden");
-
-      if (aba === "avaliadores") carregarAvaliadores();
-      if (aba === "projetos") carregarProjetos();
-      if (aba === "avaliacoes") carregarAvaliacoes();
+    async function removerDoc(tipo, id, callback) {
+      confirmarAcao(`Deseja remover este ${tipo}?`, async () => {
+        await deleteDoc(doc(db, tipo, id));
+        callback();
+      });
     }
 
     document.addEventListener("DOMContentLoaded", () => {
-      document.getElementById("btnAdicionarAvaliador")?.addEventListener("click", adicionarAvaliador);
-      document.getElementById("btnAdicionarProjeto")?.addEventListener("click", adicionarProjeto);
+      document.getElementById("btnAdicionarAvaliador")?.addEventListener("click", async () => {
+        const nome = document.getElementById("nome").value.trim();
+        const usuario = document.getElementById("usuario").value.trim();
+        const senha = document.getElementById("senha").value.trim();
+        if (!nome || !usuario || !senha) return alert("Preencha todos os campos.");
+        await addDoc(collection(db, "avaliadores"), { nome, usuario, senha });
+        document.getElementById("nome").value = "";
+        document.getElementById("usuario").value = "";
+        document.getElementById("senha").value = "";
+        carregarAvaliadores();
+      });
+
+      document.getElementById("btnAdicionarProjeto")?.addEventListener("click", async () => {
+        const titulo = document.getElementById("tituloProjeto").value.trim();
+        const escola = document.getElementById("escolaProjeto").value.trim();
+        const nivel = document.getElementById("nivelProjeto").value.trim();
+        if (!titulo || !escola || !nivel) return alert("Preencha todos os campos.");
+        await addDoc(collection(db, "projetos"), { nome: titulo, escola, nivel });
+        document.getElementById("tituloProjeto").value = "";
+        document.getElementById("escolaProjeto").value = "";
+        document.getElementById("nivelProjeto").value = "";
+        carregarProjetos();
+      });
+
       document.body.addEventListener("click", (e) => {
         if (e.target.classList.contains("delete")) {
           const id = e.target.dataset.id;
           const tipo = e.target.dataset.tipo;
-          const mensagens = {
-            avaliador: "Deseja realmente excluir este avaliador?",
-            projeto: "Deseja excluir este projeto?",
-            avaliacao: "Deseja remover esta avaliação?"
-          };
-          confirmarAcao(mensagens[tipo], async () => {
-            await deleteDoc(doc(db, tipo + "s", id));
-            if (tipo === "avaliador") carregarAvaliadores();
-            if (tipo === "projeto") carregarProjetos();
-            if (tipo === "avaliacao") carregarAvaliacoes();
-          });
+          const tipoPlural = tipo + "s";
+          if (tipo === "avaliador") removerDoc(tipoPlural, id, carregarAvaliadores);
+          else if (tipo === "projeto") removerDoc(tipoPlural, id, carregarProjetos);
+          else if (tipo === "avaliacao") removerDoc(tipoPlural, id, carregarAvaliacoes);
         }
       });
+
       document.querySelectorAll(".tab").forEach(tab => {
-        tab.addEventListener("click", () => trocarAba(tab.getAttribute("data-aba")));
+        tab.addEventListener("click", () => {
+          const aba = tab.getAttribute("data-aba");
+          document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+          document.querySelectorAll(".aba").forEach(c => c.classList.add("hidden"));
+          tab.classList.add("active");
+          document.getElementById(`aba-${aba}`).classList.remove("hidden");
+
+          if (aba === "avaliadores") carregarAvaliadores();
+          if (aba === "projetos") carregarProjetos();
+          if (aba === "avaliacoes") carregarAvaliacoes();
+        });
       });
+
+      // Carregar aba inicial
       trocarAba(document.querySelector(".tab.active").getAttribute("data-aba"));
+
+      function trocarAba(aba) {
+        document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+        document.querySelectorAll(".aba").forEach(c => c.classList.add("hidden"));
+        document.querySelector(`.tab[data-aba="${aba}"]`).classList.add("active");
+        document.getElementById(`aba-${aba}`).classList.remove("hidden");
+
+        if (aba === "avaliadores") carregarAvaliadores();
+        if (aba === "projetos") carregarProjetos();
+        if (aba === "avaliacoes") carregarAvaliacoes();
+      }
     });
   </script>
 </body>
