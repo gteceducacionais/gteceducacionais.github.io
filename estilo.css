@@ -194,10 +194,11 @@ body.dark-mode .total-geral {
 }
 
 body.dark-mode .resumo div {
-  background-color: #1e293b;
-  border-color: #475569;
-  color: #f1f5f9; /* cor do texto dentro das caixas no dark mode */
+  color: #f1f5f9 !important;
+  background-color: #1e293b !important;
+  border-color: #475569 !important;
 }
+
 
 * {
   transition: background-color 0.3s ease, color 0.3s ease;
