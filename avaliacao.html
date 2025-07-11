@@ -7,21 +7,51 @@
   <title>Avaliação</title>
   <link rel="stylesheet" href="estilo.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <style>
+    .top-bar {
+      background-color: #2563eb;
+      color: white;
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .top-bar .titulo {
+      font-weight: bold;
+      font-size: 16px;
+    }
+    .info-bar {
+      background-color: #e0f2fe;
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      font-size: 14px;
+      color: #1e3a8a;
+    }
+    .info-bar > div {
+      margin: 4px 0;
+    }
+  </style>
 </head>
 <body>
+  <div class="top-bar">
+    <div class="titulo">
+      <i class="fa-solid fa-screwdriver-wrench"></i>
+      Sistema de Avaliação | Feira Municipal de Itarema
+    </div>
+    <div class="avaliador">Avaliador: <span id="avaliador"></span></div>
+  </div>
+
   <div class="info-bar">
-    <h1><i class="fa-solid fa-clipboard-list"></i> Avaliação do Trabalho</h1>
-    <div>Avaliador: <span id="avaliador"></span></div>
+    <div><strong>Projeto:</strong> <span id="projeto"></span></div>
+    <div><strong>Escola:</strong> <span id="escola"></span></div>
+    <div><strong>Nível:</strong> <span id="nivel"></span></div>
   </div>
 
   <div class="container">
     <h1><i class="fa-solid fa-file-alt"></i> Avaliação do Projeto</h1>
-    <div class="resumo-projeto">
-      <div><strong>Projeto:</strong><br><span id="projeto"></span></div>
-      <div><strong>Escola:</strong><br><span id="escola"></span></div>
-      <div><strong>Nível:</strong><br><span id="nivel"></span></div>
-    </div>
-
     <form id="form-avaliacao">
       <section>
         <h2><i class="fa-solid fa-book"></i> Seção 1 – Apresentação do Material Escrito</h2>
