@@ -53,7 +53,7 @@
       <input type="text" id="usuario" placeholder="Login do avaliador">
       <input type="password" id="senha" placeholder="Senha do avaliador">
     </div>
-    <button class="btn" onclick="adicionarAvaliador()">Adicionar Avaliador</button>
+    <button class="btn" id="btnAdicionarAvaliador">Adicionar Avaliador</button>
   </div>
 
   <!-- Aba Projetos -->
@@ -73,7 +73,7 @@
         <option value="Nível IV (Ceará Científico)">Nível IV (Ceará Científico)</option>
       </select>
     </div>
-    <button class="btn" onclick="adicionarProjeto()">Adicionar Projeto</button>
+    <button class="btn" id="btnAdicionarProjeto">Adicionar Projeto</button>
   </div>
 
   <!-- Aba Avaliações -->
@@ -247,6 +247,8 @@
     }
 
     document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("btnAdicionarAvaliador")?.addEventListener("click", adicionarAvaliador);
+  document.getElementById("btnAdicionarProjeto")?.addEventListener("click", adicionarProjeto);
   document.getElementById("confirm-modal")?.classList.add("hidden");
   document.body.addEventListener("click", (e) => {
     if (e.target.classList.contains("delete")) {
