@@ -1,3 +1,4 @@
+
 :root {
   --azul-claro: #eff6ff;
   --azul-medio: #dbeafe;
@@ -23,7 +24,7 @@ body {
   background: white;
   padding: 32px;
   border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 
 h1 {
@@ -144,7 +145,6 @@ button:hover {
   padding: 12px;
   font-size: 14px;
   border: 1px solid var(--borda);
-  color: var(--azul-escuro); /* adicionado para manter visível no dark mode também */
 }
 
 .total-geral {
@@ -158,7 +158,6 @@ button:hover {
   color: var(--azul-escuro);
 }
 
-/* Tema escuro */
 body.dark-mode {
   background-color: #1e293b;
   color: #f1f5f9;
@@ -173,7 +172,6 @@ body.dark-mode section {
   background-color: #374151;
   border-color: #475569;
 }
-
 body.dark-mode h2 {
   color: #93c5fd;
 }
@@ -187,41 +185,15 @@ body.dark-mode textarea {
 
 body.dark-mode .info-bar,
 body.dark-mode .resumo,
-body.dark-mode .total-geral {
+body.dark-mode .total-geral,
+body.dark-mode .resumo div {
   background-color: #334155;
   color: #f1f5f9;
   border-color: #475569;
 }
-
 body.dark-mode .resumo div {
-  color: #03274a;
-  background-color: #1e293b;
-  border-color: #475569;
+  color: #1e3a8a;
 }
-.resumo-item {
-  flex: 1;
-  background-color: white;
-  padding: 16px;
-  border-radius: 8px;
-  text-align: center;
-}
-
-.resumo-item span {
-  display: block;
-  font-size: 20px;
-  font-weight: bold;
-  color: #2563eb;
-}
-
-body.dark-mode .resumo-item {
-  background-color: #1e293b;
-  color: #f1f5f9;
-}
-
-body.dark-mode .resumo-item span {
-  color: #93c5fd;
-}
-
 
 * {
   transition: background-color 0.3s ease, color 0.3s ease;
