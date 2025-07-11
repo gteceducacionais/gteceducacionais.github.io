@@ -190,8 +190,9 @@ body.dark-mode .resumo div {
   background-color: #334155;
   color: #f1f5f9;
   border-color: #475569;
-body.dark-mode .resumo-item {
-  color: #1e3a8a; /* azul escuro visível sobre fundo branco */
+}
+body.dark-mode .resumo div {
+  color: #1e3a8a;
 }
 
 * {
