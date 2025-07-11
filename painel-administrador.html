@@ -2,15 +2,10 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Painel de Administração</title>
   <style>
-    body { margin: 0; font-family: Arial, sans-serif; background-color: #f1f5f9; }
-    .header, .footer {
-      padding: 16px 24px; background-color: #e2e8f0;
-      font-weight: bold; font-size: 20px; color: #1e3a8a;
-    }
-    .footer { font-size: 12px; text-align: center; color: #555; }
+    body { font-family: Arial, sans-serif; margin: 0; background: #f1f5f9; }
     .tabs { display: flex; gap: 20px; border-bottom: 1px solid #ccc; padding: 0 24px; background-color: #f8fafc; }
     .tab { padding: 12px 0; font-weight: 500; cursor: pointer; }
     .tab.active { border-bottom: 3px solid #2563eb; color: #2563eb; font-weight: bold; }
@@ -26,7 +21,6 @@
     .btn { background-color: #16a34a; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-size: 14px; cursor: pointer; margin-top: 12px; }
     .delete { color: red; cursor: pointer; font-size: 18px; }
     .hidden { display: none; }
-    #confirm-modal.hidden { display: none !important; }
   </style>
 </head>
 <body>
@@ -35,9 +29,7 @@
     <div class="tab" data-aba="projetos">Gerenciar Projetos</div>
     <div class="tab" data-aba="avaliacoes">Avaliações Salvas</div>
   </div>
-
   <div class="content">
-    <!-- Aba Avaliadores -->
     <div class="card aba" id="aba-avaliadores">
       <h3 style="color: #1e3a8a">Avaliadores Cadastrados</h3>
       <table>
@@ -53,7 +45,6 @@
       <button class="btn" id="btnAdicionarAvaliador">Adicionar Avaliador</button>
     </div>
 
-    <!-- Aba Projetos -->
     <div class="card aba hidden" id="aba-projetos">
       <h3 style="color: #1e3a8a">Projetos Cadastrados</h3>
       <table>
@@ -73,30 +64,20 @@
       <button class="btn" id="btnAdicionarProjeto">Adicionar Projeto</button>
     </div>
 
-    <!-- Aba Avaliações -->
     <div class="card aba hidden" id="aba-avaliacoes">
-      <h3 style="color: #1e3a8a">Avaliações Realizadas</h3>
+      <h3 style="color: #1e3a8a">Avaliações Salvas</h3>
       <table>
-        <thead><tr><th>Projeto</th><th>Avaliador</th><th>Nota</th><th>Comentário</th><th>Ações</th></tr></thead>
+        <thead>
+          <tr><th>Data</th><th>Avaliador</th><th>Escola</th><th>Trabalho</th><th>Nível</th><th>Seção 1</th><th>Seção 2</th><th>Seção 3</th><th>Total</th><th>Ações</th></tr>
+        </thead>
         <tbody id="tabela-avaliacoes"></tbody>
       </table>
     </div>
   </div>
 
-  <!-- Modal -->
-  <div id="confirm-modal" class="hidden" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.4); display: flex; align-items: center; justify-content: center; z-index: 9999;">
-    <div style="background: white; padding: 20px 30px; border-radius: 10px; max-width: 400px; box-shadow: 0 2px 10px rgba(0,0,0,0.3); text-align: center;">
-      <p id="confirm-text" style="font-size: 16px; color: #1e3a8a; font-weight: bold;">Tem certeza?</p>
-      <div style="margin-top: 20px;">
-        <button id="btn-cancelar" class="btn" style="background-color: #6b7280;">Cancelar</button>
-        <button id="btn-confirmar" class="btn" style="margin-left: 12px;">Confirmar</button>
-      </div>
-    </div>
-  </div>
-
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyAq3c957QKO6Ygq-f0NwDXWmuwZxkjNe1c",
@@ -110,20 +91,32 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    function confirmarAcao(mensagem, aoConfirmar) {
-      const modal = document.getElementById("confirm-modal");
-      const texto = document.getElementById("confirm-text");
-      const btnConfirmar = document.getElementById("btn-confirmar");
-      const btnCancelar = document.getElementById("btn-cancelar");
-
-      texto.textContent = mensagem;
-      modal.classList.remove("hidden");
-
-      btnConfirmar.onclick = async () => {
-        modal.classList.add("hidden");
-        try { await aoConfirmar(); } catch (err) { console.error("Erro:", err); }
-      };
-      btnCancelar.onclick = () => modal.classList.add("hidden");
+    async function carregarAvaliacoes() {
+      const tabela = document.getElementById("tabela-avaliacoes");
+      if (!tabela) return;
+      tabela.innerHTML = "";
+      const querySnapshot = await getDocs(collection(db, "avaliacoes"));
+      querySnapshot.forEach((docSnap) => {
+        const data = docSnap.data();
+        const tr = document.createElement("tr");
+        const total1 = (data.criterio1 || 0) + (data.criterio2 || 0);
+        const total2 = (data.criterio3 || 0) + (data.criterio4 || 0) + (data.criterio5 || 0);
+        const total3 = (data.criterio6 || 0) + (data.criterio7 || 0) + (data.criterio8 || 0);
+        const totalGeral = total1 + total2 + total3;
+        const dataFormatada = data.criadoEm ? new Date(data.criadoEm).toLocaleDateString("pt-BR") : "-";
+        tr.innerHTML = `
+          <td>${dataFormatada}</td>
+          <td>${data.nomeAvaliador || data.avaliador}</td>
+          <td>${data.escola}</td>
+          <td>${data.projeto}</td>
+          <td>${data.nivel}</td>
+          <td>${total1}</td>
+          <td>${total2}</td>
+          <td>${total3}</td>
+          <td><strong>${totalGeral}</strong></td>
+          <td><span class="delete" data-id="${docSnap.id}" data-tipo="avaliacao">🗑️</span></td>`;
+        tabela.appendChild(tr);
+      });
     }
 
     async function carregarAvaliadores() {
@@ -150,94 +143,58 @@
       });
     }
 
-    async function carregarAvaliacoes() {
-      const tabela = document.getElementById("tabela-avaliacoes");
-      tabela.innerHTML = "";
-      const querySnapshot = await getDocs(collection(db, "avaliacoes"));
-      querySnapshot.forEach((docSnap) => {
-        const data = docSnap.data();
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${data.projeto}</td>
-          <td>${data.nomeAvaliador || data.avaliador}</td>
-          <td>${typeof data.nota === 'number' ? data.nota : parseInt(data.nota) || 0}</td>
-          <td>${data.comentario || "-"}</td>
-          <td><span class="delete" data-id="${docSnap.id}" data-tipo="avaliacao">🗑️</span></td>
-        `;
-        tabela.appendChild(tr);
-      });
-    }
-
-    async function removerDoc(tipo, id, callback) {
-      confirmarAcao(`Deseja remover este ${tipo}?`, async () => {
-        await deleteDoc(doc(db, tipo, id));
-        callback();
-      });
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-      document.getElementById("btnAdicionarAvaliador")?.addEventListener("click", async () => {
-        const nome = document.getElementById("nome").value.trim();
-        const usuario = document.getElementById("usuario").value.trim();
-        const senha = document.getElementById("senha").value.trim();
-        if (!nome || !usuario || !senha) return alert("Preencha todos os campos.");
-        await addDoc(collection(db, "avaliadores"), { nome, usuario, senha });
-        document.getElementById("nome").value = "";
-        document.getElementById("usuario").value = "";
-        document.getElementById("senha").value = "";
-        carregarAvaliadores();
-      });
-
-      document.getElementById("btnAdicionarProjeto")?.addEventListener("click", async () => {
-        const titulo = document.getElementById("tituloProjeto").value.trim();
-        const escola = document.getElementById("escolaProjeto").value.trim();
-        const nivel = document.getElementById("nivelProjeto").value.trim();
-        if (!titulo || !escola || !nivel) return alert("Preencha todos os campos.");
-        await addDoc(collection(db, "projetos"), { nome: titulo, escola, nivel });
-        document.getElementById("tituloProjeto").value = "";
-        document.getElementById("escolaProjeto").value = "";
-        document.getElementById("nivelProjeto").value = "";
-        carregarProjetos();
-      });
-
-      document.body.addEventListener("click", (e) => {
-        if (e.target.classList.contains("delete")) {
-          const id = e.target.dataset.id;
-          const tipo = e.target.dataset.tipo;
-          const tipoPlural = tipo + "s";
-          if (tipo === "avaliador") removerDoc(tipoPlural, id, carregarAvaliadores);
-          else if (tipo === "projeto") removerDoc(tipoPlural, id, carregarProjetos);
-          else if (tipo === "avaliacao") removerDoc(tipoPlural, id, carregarAvaliacoes);
-        }
-      });
-
-      document.querySelectorAll(".tab").forEach(tab => {
-        tab.addEventListener("click", () => {
-          const aba = tab.getAttribute("data-aba");
-          document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
-          document.querySelectorAll(".aba").forEach(c => c.classList.add("hidden"));
-          tab.classList.add("active");
-          document.getElementById(`aba-${aba}`).classList.remove("hidden");
-
-          if (aba === "avaliadores") carregarAvaliadores();
-          if (aba === "projetos") carregarProjetos();
-          if (aba === "avaliacoes") carregarAvaliacoes();
-        });
-      });
-
-      // Carregar aba inicial
-      trocarAba(document.querySelector(".tab.active").getAttribute("data-aba"));
-
-      function trocarAba(aba) {
+    document.querySelectorAll(".tab").forEach(tab => {
+      tab.addEventListener("click", () => {
         document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
-        document.querySelectorAll(".aba").forEach(c => c.classList.add("hidden"));
-        document.querySelector(`.tab[data-aba="${aba}"]`).classList.add("active");
+        document.querySelectorAll(".aba").forEach(a => a.classList.add("hidden"));
+        tab.classList.add("active");
+        const aba = tab.dataset.aba;
         document.getElementById(`aba-${aba}`).classList.remove("hidden");
-
         if (aba === "avaliadores") carregarAvaliadores();
         if (aba === "projetos") carregarProjetos();
         if (aba === "avaliacoes") carregarAvaliacoes();
+      });
+    });
+
+    document.getElementById("btnAdicionarAvaliador")?.addEventListener("click", async () => {
+      const nome = document.getElementById("nome").value.trim();
+      const usuario = document.getElementById("usuario").value.trim();
+      const senha = document.getElementById("senha").value.trim();
+      if (!nome || !usuario || !senha) return alert("Preencha todos os campos.");
+      await addDoc(collection(db, "avaliadores"), { nome, usuario, senha });
+      document.getElementById("nome").value = "";
+      document.getElementById("usuario").value = "";
+      document.getElementById("senha").value = "";
+      carregarAvaliadores();
+    });
+
+    document.getElementById("btnAdicionarProjeto")?.addEventListener("click", async () => {
+      const titulo = document.getElementById("tituloProjeto").value.trim();
+      const escola = document.getElementById("escolaProjeto").value.trim();
+      const nivel = document.getElementById("nivelProjeto").value;
+      if (!titulo || !escola || !nivel) return alert("Preencha todos os campos.");
+      await addDoc(collection(db, "projetos"), { nome: titulo, escola, nivel });
+      document.getElementById("tituloProjeto").value = "";
+      document.getElementById("escolaProjeto").value = "";
+      document.getElementById("nivelProjeto").value = "";
+      carregarProjetos();
+    });
+
+    document.body.addEventListener("click", (e) => {
+      if (e.target.classList.contains("delete")) {
+        const id = e.target.dataset.id;
+        const tipo = e.target.dataset.tipo;
+        deleteDoc(doc(db, tipo + "s", id)).then(() => {
+          if (tipo === "avaliador") carregarAvaliadores();
+          if (tipo === "projeto") carregarProjetos();
+          if (tipo === "avaliacao") carregarAvaliacoes();
+        });
       }
+    });
+
+    // Inicialização
+    window.addEventListener("DOMContentLoaded", () => {
+      document.querySelector(".tab.active")?.click();
     });
   </script>
 </body>
