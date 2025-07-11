@@ -29,15 +29,25 @@
       <p><strong>Avaliador:</strong> <span id="avaliador"></span></p>
     </div>
     <form id="form-avaliacao">
-      <h2>Critérios</h2>
-      <label>1. Clareza da Apresentação</label>
-      <input type="number" name="criterio1" min="0" max="10" required />
+      <h2>Critérios de Avaliação</h2>
 
-      <label>2. Domínio do Tema</label>
-      <input type="number" name="criterio2" min="0" max="10" required />
+      <fieldset style="margin-bottom: 16px; border: none;">
+        <legend><strong>1. Apresentação</strong></legend>
+        <label>1.1 Clareza da apresentação</label>
+        <input type="number" name="criterio1" min="0" max="5" required />
 
-      <label>3. Criatividade</label>
-      <input type="number" name="criterio3" min="0" max="10" required />
+        <label>1.2 Domínio do conteúdo</label>
+        <input type="number" name="criterio2" min="0" max="5" required />
+      </fieldset>
+
+      <fieldset style="margin-bottom: 16px; border: none;">
+        <legend><strong>2. Criatividade</strong></legend>
+        <label>2.1 Inovação na abordagem</label>
+        <input type="number" name="criterio3" min="0" max="5" required />
+
+        <label>2.2 Apresentação visual</label>
+        <input type="number" name="criterio4" min="0" max="5" required />
+      </fieldset>
 
       <label>Comentário</label>
       <textarea name="comentario" rows="4" style="width:100%; margin-bottom: 16px;"></textarea>
