@@ -1,22 +1,21 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Avaliação</title>
-  <link rel="stylesheet" href="estilo.css" />
+  <link rel="stylesheet" href="estilo_visual_igual_ao_layout.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
-  <button class="dark-toggle" onclick="alternarTema()">Alternar tema</button>
-
   <div class="info-bar">
-    <h1><i class="fa-solid fa-clipboard-list fa-sm"></i> Avaliação do Trabalho</h1>
+    <h1><i class="fa-solid fa-clipboard-list"></i> Avaliação do Trabalho</h1>
     <div>Avaliador: <span id="avaliador"></span></div>
   </div>
 
   <div class="container">
-    <h1><i class="fa-solid fa-file-alt fa-sm"></i> Avaliação do Projeto</h1>
+    <h1><i class="fa-solid fa-file-alt"></i> Avaliação do Projeto</h1>
     <div class="resumo-projeto">
       <div><strong>Projeto:</strong><br><span id="projeto"></span></div>
       <div><strong>Escola:</strong><br><span id="escola"></span></div>
@@ -25,26 +24,26 @@
 
     <form id="form-avaliacao">
       <section>
-        <h2><i class="fa-solid fa-book fa-sm"></i> Seção 1 – Apresentação do Material Escrito</h2>
+        <h2><i class="fa-solid fa-book"></i> Seção 1 – Apresentação do Material Escrito</h2>
         <label>1.1 Banner <input type="number" name="criterio1" min="1" max="5" value="1" required /></label>
         <label>1.2 Caderno de campo <input type="number" name="criterio2" min="1" max="5" value="1" required /></label>
-        <p><strong>Total:</strong> <span id="total1">2</span></p>
+        <p><strong>Pontuação Total da Seção 1:</strong> <span id="total1">2</span></p>
       </section>
 
       <section>
-        <h2><i class="fa-solid fa-microphone fa-sm"></i> Seção 2 – Apresentação Oral</h2>
+        <h2><i class="fa-solid fa-microphone"></i> Seção 2 – Apresentação Oral</h2>
         <label>2.1 Clareza, concisão e objetividade <input type="number" name="criterio3" min="1" max="5" value="1" required /></label>
         <label>2.2 Capacidade de responder perguntas <input type="number" name="criterio4" min="1" max="5" value="1" required /></label>
         <label>2.3 Atitude cordial e atenção ao visitante <input type="number" name="criterio5" min="1" max="5" value="1" required /></label>
-        <p><strong>Total:</strong> <span id="total2">3</span></p>
+        <p><strong>Pontuação Total da Seção 2:</strong> <span id="total2">3</span></p>
       </section>
 
       <section>
-        <h2><i class="fa-solid fa-flask fa-sm"></i> Seção 3 – Desenvolvimento do Trabalho</h2>
+        <h2><i class="fa-solid fa-flask"></i> Seção 3 – Desenvolvimento do Trabalho</h2>
         <label>3.1 Questão central bem definida <input type="number" name="criterio6" min="1" max="5" value="1" required /></label>
         <label>3.2 Coleta de dados e conclusão coerente <input type="number" name="criterio7" min="1" max="5" value="1" required /></label>
         <label>3.3 Trabalho em equipe <input type="number" name="criterio8" min="1" max="5" value="1" required /></label>
-        <p><strong>Total:</strong> <span id="total3">3</span></p>
+        <p><strong>Pontuação Total da Seção 3:</strong> <span id="total3">3</span></p>
       </section>
 
       <div class="resumo">
@@ -54,10 +53,13 @@
         <div>Total<br><span id="total">8</span></div>
       </div>
 
-      <label><i class="fa-solid fa-comment fa-sm"></i> Comentário</label>
+      <label><i class="fa-solid fa-comment"></i> Comentário</label>
       <textarea name="comentario" rows="4"></textarea>
 
-      <button type="submit"><i class="fa-solid fa-check"></i> Salvar Avaliação</button>
+      <div style="display: flex; justify-content: center; gap: 20px;">
+        <button type="submit"><i class="fa-solid fa-check"></i> Salvar Avaliação</button>
+        <button type="button" onclick="window.location.reload()"><i class="fa-solid fa-rotate"></i> Nova Avaliação</button>
+      </div>
     </form>
   </div>
 
@@ -65,7 +67,22 @@
     &copy; 2025 | Gerência de Tecnologias Educacionais
   </div>
 
-  <script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAq3c957QKO6Ygq-f0NwDXWmuwZxkjNe1c",
+      authDomain: "seducitarema-185aa.firebaseapp.com",
+      projectId: "seducitarema-185aa",
+      storageBucket: "seducitarema-185aa.appspot.com",
+      messagingSenderId: "345071170470",
+      appId: "1:345071170470:web:469ab81b881e91dd4a1567"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
     function atualizarTotais() {
       const criterio = n => parseInt(document.querySelector(`[name="criterio${n}"]`).value);
       const total1 = criterio(1) + criterio(2);
@@ -113,51 +130,25 @@
         criterio7: +this.criterio7.value,
         criterio8: +this.criterio8.value,
         comentario: this.comentario.value.trim(),
-        criadoEm: new Date().toISOString()
+        criadoEm: new Date().toISOString(),
+        nota:
+          +this.criterio1.value +
+          +this.criterio2.value +
+          +this.criterio3.value +
+          +this.criterio4.value +
+          +this.criterio5.value +
+          +this.criterio6.value +
+          +this.criterio7.value +
+          +this.criterio8.value
       };
 
-      avaliacao.nota =
-        avaliacao.criterio1 +
-        avaliacao.criterio2 +
-        avaliacao.criterio3 +
-        avaliacao.criterio4 +
-        avaliacao.criterio5 +
-        avaliacao.criterio6 +
-        avaliacao.criterio7 +
-        avaliacao.criterio8;
-
       try {
-        const app = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js");
-        const firestore = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
-        const firebaseConfig = {
-          apiKey: "AIzaSyAq3c957QKO6Ygq-f0NwDXWmuwZxkjNe1c",
-          authDomain: "seducitarema-185aa.firebaseapp.com",
-          projectId: "seducitarema-185aa",
-          storageBucket: "seducitarema-185aa.appspot.com",
-          messagingSenderId: "345071170470",
-          appId: "1:345071170470:web:469ab81b881e91dd4a1567"
-        };
-        const appInit = app.initializeApp(firebaseConfig);
-        const db = firestore.getFirestore(appInit);
-        await firestore.addDoc(firestore.collection(db, "avaliacoes"), avaliacao);
+        await addDoc(collection(db, "avaliacoes"), avaliacao);
         alert("Avaliação salva com sucesso!");
         window.location.href = "avaliador.html";
       } catch (err) {
         console.error("Erro ao salvar avaliação:", err);
         alert("Erro ao salvar avaliação. Tente novamente.");
-      }
-    });
-
-    function alternarTema() {
-      const body = document.body;
-      body.classList.toggle("dark-mode");
-      localStorage.setItem("tema", body.classList.contains("dark-mode") ? "escuro" : "claro");
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-      const temaSalvo = localStorage.getItem("tema");
-      if (temaSalvo === "escuro") {
-        document.body.classList.add("dark-mode");
       }
     });
   </script>
