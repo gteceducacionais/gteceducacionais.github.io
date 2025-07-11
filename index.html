@@ -88,16 +88,13 @@
         const querySnapshot = await getDocs(collection(db, "avaliadores"));
         let encontrado = false;
 
-        querySnapshot.forEach((doc) => {
-          const data = doc.data();
-          if (data.usuario === usuario && data.senha === senha) {
-            encontrado = true;
-          }
-        });
+        // loop desnecessário removido
 
-        querySnapshot.forEach((doc) => {
+        let redirecionado = false;
+querySnapshot.forEach((doc) => {
   const data = doc.data();
-  if (data.usuario === usuario && data.senha === senha) {
+  if (!redirecionado && data.usuario === usuario && data.senha === senha) {
+    redirecionado = true;
     localStorage.setItem("avaliadorLogado", usuario);
     window.location.href = "avaliador.html";
   }
