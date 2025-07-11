@@ -157,7 +157,8 @@
     document.getElementById("projeto").textContent = dados.projeto;
     document.getElementById("escola").textContent = dados.escola;
     document.getElementById("nivel").textContent = dados.nivel;
-    document.getElementById("avaliador").textContent = dados.nomeAvaliador || dados.avaliador;
+    const nomeAvaliador = localStorage.getItem("avaliadorNome") || dados.nomeAvaliador || dados.avaliador;
+document.getElementById("avaliador").textContent = nomeAvaliador;
   document.getElementById("form-avaliacao").addEventListener("submit", async function(e) {
   e.preventDefault();
 
@@ -175,6 +176,7 @@
 
   const avaliacao = {
     ...dados,
+    nomeAvaliador,
     criterio1,
     criterio2,
     criterio3,
