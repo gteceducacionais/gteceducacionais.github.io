@@ -94,10 +94,12 @@
   </style>
 </head>
 <body>
-  <div class="tabs">
-    <div class="tab active" data-aba="avaliadores">Gerenciar Avaliadores</div>
-    <div class="tab" data-aba="projetos">Gerenciar Projetos</div>
-    <div class="tab" data-aba="avaliacoes">Avaliações Salvas</div>
+  
+  <div class="tabs" style="align-items: center;">
+  <div class="tab active" data-aba="avaliadores">Gerenciar Avaliadores</div>
+  <div class="tab" data-aba="projetos">Gerenciar Projetos</div>
+  <div class="tab" data-aba="avaliacoes">Avaliações Salvas</div>
+  <button onclick="window.location.href='login.html'" class="btn" style="margin-left:auto; padding: 6px 12px; font-size: 13px; background-color: #ef4444;">Sair</button>
   </div>
   <div class="content">
     <div class="card aba" id="aba-avaliadores">
@@ -266,7 +268,10 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById(`aba-${aba}`).classList.remove("hidden");
         if (aba === "avaliadores") carregarAvaliadores();
         if (aba === "projetos") carregarProjetos();
-        if (aba === "avaliacoes") carregarAvaliacoes();
+        if (aba === "avaliacoes") {
+  carregarAvaliacoes();
+  document.getElementById("btnIndividuais")?.click();
+}
       });
     });
 
