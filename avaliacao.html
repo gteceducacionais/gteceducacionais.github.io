@@ -1,65 +1,65 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Avaliação</title>
-  <link rel="stylesheet" href="estilo.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="estilo_visual_igual_ao_layout.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <style>
-    .resumo-container {
-      background-color: #e0f2fe;
-      padding: 16px;
-      border-radius: 10px;
-      margin-top: 24px;
+    :root {
+      --azul: #2563eb;
+      --azul-claro: #e0f2fe;
+      --texto-claro: #1e3a8a;
+      --dark-bg: #1e293b;
+      --dark-text: #f1f5f9;
     }
-    .resumo-container h3 {
-      margin-top: 0;
-      font-size: 18px;
-      color: #1e3a8a;
+    body.dark-mode {
+      background-color: var(--dark-bg);
+      color: var(--dark-text);
     }
-    .resumo-grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-top: 12px;
-    }
-    .resumo-item {
-      flex: 1;
-      background-color: white;
-      padding: 16px;
-      border-radius: 8px;
-      text-align: center;
-      font-size: 14px;
-    }
-    .resumo-item span {
-      display: block;
-      font-size: 20px;
-      font-weight: bold;
-      color: #2563eb;
-      margin-top: 4px;
-    }
-    .total-geral-box {
-      background-color: #dbeafe;
-      margin-top: 16px;
+    .header-bar {
+      background-color: var(--azul);
+      color: white;
       padding: 12px 24px;
-      border-radius: 8px;
-      font-weight: bold;
       display: flex;
       justify-content: space-between;
-      color: #1e3a8a;
-      font-size: 16px;
+      align-items: center;
     }
-    .total-geral-box span {
-      color: #2563eb;
-      font-size: 22px;
+    .center-title {
+      font-weight: bold;
+      flex: 1;
+      text-align: center;
+    }
+    .header-buttons {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+    .dark-toggle, .logout-btn {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 18px;
+      cursor: pointer;
+    }
+    .info-bar {
+      background-color: var(--azul-claro);
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      font-size: 14px;
+      color: var(--texto-claro);
     }
   </style>
-</head></head>
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js"></script>
+</head>
 <body>
-
-
-  <div class="header-bar" style="display: flex; justify-content: space-between; align-items: center; gap: 16px;">
+  <div class="header-bar">
     <div class="header-buttons">
       <button class="dark-toggle" onclick="alternarTema()" title="Alternar tema">
         <i id="icone-tema" class="fa-solid fa-moon"></i>
@@ -82,52 +82,28 @@
     <div><strong>Avaliador:</strong> <span id="avaliador"></span></div>
   </div>
 
-  <script>
-    function alternarTema() {
-      const body = document.body;
-      const icone = document.getElementById("icone-tema");
-      body.classList.toggle("dark-mode");
-      const modo = body.classList.contains("dark-mode") ? "escuro" : "claro";
-      localStorage.setItem("tema", modo);
-      icone.className = modo === "escuro" ? "fa-solid fa-sun" : "fa-solid fa-moon";
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-      const temaSalvo = localStorage.getItem("tema");
-      const body = document.body;
-      const icone = document.getElementById("icone-tema");
-      if (temaSalvo === "escuro") {
-        body.classList.add("dark-mode");
-        icone.className = "fa-solid fa-sun";
-      }
-    });
-  </script>
-
-</html>
-<div class="container">
+  <div class="container">
     <h1><i class="fa-solid fa-file-alt"></i> Avaliação do Projeto</h1>
     <form id="form-avaliacao">
       <section>
         <h2><i class="fa-solid fa-book"></i> Seção 1 – Apresentação do Material Escrito</h2>
-        <label>1.1 Banner <input type="number" name="criterio1" min="1" max="5" value="1" required /></label>
-        <label>1.2 Caderno de campo <input type="number" name="criterio2" min="1" max="5" value="1" required /></label>
-        <p><strong>Pontuação Total da Seção 1:</strong> <span id="total1">2</span></p>
+        <label>1.1 Banner <input type="number" name="criterio1" required min="1" max="5" value="1" /></label>
+        <label>1.2 Caderno de campo <input type="number" name="criterio2" required min="1" max="5" value="1" /></label>
+        <p><strong>Total:</strong> <span id="total1">2</span></p>
       </section>
-
       <section>
         <h2><i class="fa-solid fa-microphone"></i> Seção 2 – Apresentação Oral</h2>
-        <label>2.1 Clareza, concisão e objetividade <input type="number" name="criterio3" min="1" max="5" value="1" required /></label>
-        <label>2.2 Capacidade de responder perguntas <input type="number" name="criterio4" min="1" max="5" value="1" required /></label>
-        <label>2.3 Atitude cordial e atenção ao visitante <input type="number" name="criterio5" min="1" max="5" value="1" required /></label>
-        <p><strong>Pontuação Total da Seção 2:</strong> <span id="total2">3</span></p>
+        <label>2.1 Clareza, concisão e objetividade <input type="number" name="criterio3" required min="1" max="5" value="1" /></label>
+        <label>2.2 Capacidade de responder perguntas <input type="number" name="criterio4" required min="1" max="5" value="1" /></label>
+        <label>2.3 Atitude cordial e atenção ao visitante <input type="number" name="criterio5" required min="1" max="5" value="1" /></label>
+        <p><strong>Total:</strong> <span id="total2">3</span></p>
       </section>
-
       <section>
         <h2><i class="fa-solid fa-flask"></i> Seção 3 – Desenvolvimento do Trabalho</h2>
-        <label>3.1 Questão central bem definida <input type="number" name="criterio6" min="1" max="5" value="1" required /></label>
-        <label>3.2 Coleta de dados e conclusão coerente <input type="number" name="criterio7" min="1" max="5" value="1" required /></label>
-        <label>3.3 Trabalho em equipe <input type="number" name="criterio8" min="1" max="5" value="1" required /></label>
-        <p><strong>Pontuação Total da Seção 3:</strong> <span id="total3">3</span></p>
+        <label>3.1 Questão central bem definida <input type="number" name="criterio6" required min="1" max="5" value="1" /></label>
+        <label>3.2 Coleta de dados e conclusão coerente <input type="number" name="criterio7" required min="1" max="5" value="1" /></label>
+        <label>3.3 Trabalho em equipe <input type="number" name="criterio8" required min="1" max="5" value="1" /></label>
+        <p><strong>Total:</strong> <span id="total3">3</span></p>
       </section>
 
       <div class="resumo-container">
@@ -142,6 +118,9 @@
         </div>
       </div>
 
+      <label>Comentário</label>
+      <textarea name="comentario" rows="4"></textarea>
+
       <button type="submit"><i class="fa-solid fa-check"></i> Salvar Avaliação</button>
     </form>
   </div>
@@ -150,10 +129,7 @@
     &copy; 2025 | Gerência de Tecnologias Educacionais
   </div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
+  <script>
     const firebaseConfig = {
       apiKey: "AIzaSyAq3c957QKO6Ygq-f0NwDXWmuwZxkjNe1c",
       authDomain: "seducitarema-185aa.firebaseapp.com",
@@ -162,9 +138,8 @@
       messagingSenderId: "345071170470",
       appId: "1:345071170470:web:469ab81b881e91dd4a1567"
     };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
 
     function atualizarTotais() {
       const criterio = n => parseInt(document.querySelector(`[name="criterio${n}"]`).value);
@@ -172,7 +147,6 @@
       const total2 = criterio(3) + criterio(4) + criterio(5);
       const total3 = criterio(6) + criterio(7) + criterio(8);
       const totalGeral = total1 + total2 + total3;
-
       document.getElementById("total1").textContent = total1;
       document.getElementById("total2").textContent = total2;
       document.getElementById("total3").textContent = total3;
@@ -198,42 +172,55 @@
     document.getElementById("nivel").textContent = dados.nivel;
     document.getElementById("avaliador").textContent = nomeAvaliador;
 
-    
+    document.getElementById("form-avaliacao").addEventListener("submit", async function (e) {
+      e.preventDefault();
+      const get = name => {
+        const el = this.querySelector(`[name="${name}"]`);
+        return el ? +el.value : 0;
+      };
+      const avaliacao = {
+        ...dados,
+        nomeAvaliador,
+        criterio1: get("criterio1"),
+        criterio2: get("criterio2"),
+        criterio3: get("criterio3"),
+        criterio4: get("criterio4"),
+        criterio5: get("criterio5"),
+        criterio6: get("criterio6"),
+        criterio7: get("criterio7"),
+        criterio8: get("criterio8"),
+        comentario: this.querySelector("[name='comentario']").value.trim(),
+        criadoEm: new Date().toISOString(),
+        nota: [1,2,3,4,5,6,7,8].map(n => get("criterio"+n)).reduce((a,b)=>a+b, 0)
+      };
+      try {
+        await db.collection("avaliacoes").add(avaliacao);
+        alert("Avaliação salva com sucesso!");
+        window.location.href = "avaliador.html";
+      } catch (err) {
+        console.error("Erro ao salvar avaliação:", err);
+        alert("Erro ao salvar avaliação. Tente novamente.");
+      }
+    });
 
+    function alternarTema() {
+      const body = document.body;
+      const icone = document.getElementById("icone-tema");
+      body.classList.toggle("dark-mode");
+      const modo = body.classList.contains("dark-mode") ? "escuro" : "claro";
+      localStorage.setItem("tema", modo);
+      icone.className = modo === "escuro" ? "fa-solid fa-sun" : "fa-solid fa-moon";
+    }
 
-document.getElementById("form-avaliacao").addEventListener("submit", async function (e) {
-  e.preventDefault();
-  const get = name => {
-    const el = this.querySelector(`[name="\${name}"]`);
-    return el ? +el.value : 0;
-  };
-  const avaliacao = {
-    ...dados,
-    nomeAvaliador,
-    criterio1: get("criterio1"),
-    criterio2: get("criterio2"),
-    criterio3: get("criterio3"),
-    criterio4: get("criterio4"),
-    criterio5: get("criterio5"),
-    criterio6: get("criterio6"),
-    criterio7: get("criterio7"),
-    criterio8: get("criterio8"),
-    comentario: this.querySelector("[name='comentario']").value.trim(),
-    criadoEm: new Date().toISOString(),
-    nota: [1,2,3,4,5,6,7,8].map(n => get("criterio"+n)).reduce((a,b)=>a+b, 0)
-  };
-  try {
-    await addDoc(collection(db, "avaliacoes"), avaliacao);
-    alert("Avaliação salva com sucesso!");
-    window.location.href = "avaliador.html";
-  } catch (err) {
-    console.error("Erro ao salvar avaliação:", err);
-    alert("Erro ao salvar avaliação. Tente novamente.");
-  }
-});
-
-
-
+    document.addEventListener("DOMContentLoaded", () => {
+      const temaSalvo = localStorage.getItem("tema");
+      const body = document.body;
+      const icone = document.getElementById("icone-tema");
+      if (temaSalvo === "escuro") {
+        body.classList.add("dark-mode");
+        icone.className = "fa-solid fa-sun";
+      }
+    });
   </script>
 </body>
 </html>
