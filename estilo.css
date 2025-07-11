@@ -172,6 +172,9 @@ body.dark-mode section {
   background-color: #374151;
   border-color: #475569;
 }
+body.dark-mode h2 {
+  color: #93c5fd;
+}
 
 body.dark-mode input,
 body.dark-mode textarea {
