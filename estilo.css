@@ -192,7 +192,9 @@ body.dark-mode .resumo div {
   border-color: #475569;
 }
 body.dark-mode .resumo div {
-  color: #1e3a8a;
+  background-color: #334155;
+  color: #1e3a8a; /* esse é o texto de dentro, como "Seção 1" */
+  border-color: #475569;
 }
 
 * {
