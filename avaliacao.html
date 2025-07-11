@@ -29,25 +29,34 @@
       <p><strong>Avaliador:</strong> <span id="avaliador"></span></p>
     </div>
     <form id="form-avaliacao">
-      <h2>Critérios de Avaliação</h2>
+      <section>
+        <h2>Seção 1 – Apresentação do Material Escrito</h2>
+        <label>1.1 Banner <input type="number" name="criterio1" min="1" max="5" value="1" required /></label>
+        <label>1.2 Caderno de campo <input type="number" name="criterio2" min="1" max="5" value="1" required /></label>
+        <p><strong>Pontuação Total da Seção 1:</strong> <span id="total1">2</span></p>
+      </section>
 
-      <fieldset style="margin-bottom: 16px; border: none;">
-        <legend><strong>1. Apresentação</strong></legend>
-        <label>1.1 Clareza da apresentação</label>
-        <input type="number" name="criterio1" min="0" max="5" required />
+      <section>
+        <h2>Seção 2 – Apresentação Oral</h2>
+        <label>2.1 Clareza, concisão e objetividade <input type="number" name="criterio3" min="1" max="5" value="1" required /></label>
+        <label>2.2 Capacidade de responder perguntas <input type="number" name="criterio4" min="1" max="5" value="1" required /></label>
+        <label>2.3 Atitude cordial e atenção ao visitante <input type="number" name="criterio5" min="1" max="5" value="1" required /></label>
+        <p><strong>Pontuação Total da Seção 2:</strong> <span id="total2">3</span></p>
+      </section>
 
-        <label>1.2 Domínio do conteúdo</label>
-        <input type="number" name="criterio2" min="0" max="5" required />
-      </fieldset>
+      <section>
+        <h2>Seção 3 – Desenvolvimento do Trabalho</h2>
+        <label>3.1 Questão central bem definida <input type="number" name="criterio6" min="1" max="5" value="1" required /></label>
+        <label>3.2 Coleta de dados e conclusão coerente <input type="number" name="criterio7" min="1" max="5" value="1" required /></label>
+        <label>3.3 Trabalho em equipe <input type="number" name="criterio8" min="1" max="5" value="1" required /></label>
+        <p><strong>Pontuação Total da Seção 3:</strong> <span id="total3">3</span></p>
+      </section>
 
-      <fieldset style="margin-bottom: 16px; border: none;">
-        <legend><strong>2. Criatividade</strong></legend>
-        <label>2.1 Inovação na abordagem</label>
-        <input type="number" name="criterio3" min="0" max="5" required />
-
-        <label>2.2 Apresentação visual</label>
-        <input type="number" name="criterio4" min="0" max="5" required />
-      </fieldset>
+      <section>
+        <h2>Resumo da Avaliação</h2>
+        <p>Seção 1: <span id="r1">2</span> | Seção 2: <span id="r2">3</span> | Seção 3: <span id="r3">3</span></p>
+        <h3>TOTAL GERAL: <span id="total">8</span></h3>
+      </section>
 
       <label>Comentário</label>
       <textarea name="comentario" rows="4" style="width:100%; margin-bottom: 16px;"></textarea>
