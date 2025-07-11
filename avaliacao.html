@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -8,30 +7,52 @@
   <link rel="stylesheet" href="estilo.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <style>
-    .top-bar {
-      background-color: #2563eb;
-      color: white;
-      padding: 12px 24px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-    .top-bar .titulo {
-      font-weight: bold;
-      font-size: 16px;
-    }
-    .info-bar {
+    .resumo-container {
       background-color: #e0f2fe;
-      padding: 16px 24px;
-      display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      font-size: 14px;
+      padding: 16px;
+      border-radius: 10px;
+      margin-top: 24px;
+    }
+    .resumo-container h3 {
+      margin-top: 0;
+      font-size: 18px;
       color: #1e3a8a;
     }
-    .info-bar > div {
-      margin: 4px 0;
+    .resumo-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 12px;
+    }
+    .resumo-item {
+      flex: 1;
+      background-color: white;
+      padding: 16px;
+      border-radius: 8px;
+      text-align: center;
+      font-size: 14px;
+    }
+    .resumo-item span {
+      display: block;
+      font-size: 20px;
+      font-weight: bold;
+      color: #2563eb;
+      margin-top: 4px;
+    }
+    .total-geral-box {
+      background-color: #dbeafe;
+      margin-top: 16px;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: bold;
+      display: flex;
+      justify-content: space-between;
+      color: #1e3a8a;
+      font-size: 16px;
+    }
+    .total-geral-box span {
+      color: #2563eb;
+      font-size: 22px;
     }
   </style>
 </head>
@@ -76,20 +97,19 @@
         <p><strong>Pontuação Total da Seção 3:</strong> <span id="total3">3</span></p>
       </section>
 
-      <div class="resumo">
-        <div>Seção 1<br><span id="r1">2</span></div>
-        <div>Seção 2<br><span id="r2">3</span></div>
-        <div>Seção 3<br><span id="r3">3</span></div>
-        <div>Total<br><span id="total">8</span></div>
+      <div class="resumo-container">
+        <h3>Resumo da Avaliação</h3>
+        <div class="resumo-grid">
+          <div class="resumo-item">Seção 1 <span id="r1">2</span></div>
+          <div class="resumo-item">Seção 2 <span id="r2">3</span></div>
+          <div class="resumo-item">Seção 3 <span id="r3">3</span></div>
+        </div>
+        <div class="total-geral-box">
+          TOTAL GERAL <span id="total">8</span>
+        </div>
       </div>
 
-      <label><i class="fa-solid fa-comment"></i> Comentário</label>
-      <textarea name="comentario" rows="4"></textarea>
-
-      <div style="display: flex; justify-content: center; gap: 20px;">
-        <button type="submit"><i class="fa-solid fa-check"></i> Salvar Avaliação</button>
-        <button type="button" onclick="window.location.reload()"><i class="fa-solid fa-rotate"></i> Nova Avaliação</button>
-      </div>
+      <button type="submit"><i class="fa-solid fa-check"></i> Salvar Avaliação</button>
     </form>
   </div>
 
