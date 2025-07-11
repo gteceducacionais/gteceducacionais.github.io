@@ -1,3 +1,4 @@
+<!-- avaliacao.html -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -6,70 +7,18 @@
   <title>Avaliação</title>
   <style>
     body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f1f5f9; margin: 0; padding: 0; }
-    .container {
-      max-width: 900px; margin: 40px auto; background: white;
-      padding: 32px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    }
+    .container { max-width: 900px; margin: 40px auto; background: white; padding: 32px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
     h1 { font-size: 28px; margin-bottom: 8px; color: #1e3a8a; }
     h2 { font-size: 20px; margin-top: 32px; color: #1e3a8a; }
     h3 { font-size: 22px; text-align: center; margin-top: 16px; }
     section { margin-bottom: 24px; background-color: #f8fafc; padding: 16px; border-radius: 6px; }
-    label {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin: 8px 0;
-      font-weight: 500;
-      color: #1e3a8a;
-    }
-    input[type="number"] {
-      width: 60px;
-      padding: 6px;
-      font-size: 16px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      text-align: center;
-    }
-    textarea {
-      width: 100%;
-      padding: 10px;
-      font-size: 16px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      margin-bottom: 16px;
-    }
-    button {
-      padding: 12px 24px;
-      font-size: 16px;
-      font-weight: bold;
-      color: white;
-      background-color: #16a34a;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      display: block;
-      margin: 20px auto 0 auto;
-    }
-    .footer {
-      text-align: center;
-      font-size: 12px;
-      color: #555;
-      padding: 20px;
-      margin-top: 40px;
-    }
-    .resumo {
-      display: flex;
-      justify-content: space-around;
-      padding: 16px;
-      background-color: #e0f2fe;
-      border-radius: 8px;
-      font-weight: bold;
-      color: #1e3a8a;
-    }
-    .resumo div {
-      text-align: center;
-      flex: 1;
-    }
+    label { display: flex; justify-content: space-between; align-items: center; margin: 8px 0; font-weight: 500; color: #1e3a8a; }
+    input[type="number"] { width: 60px; padding: 6px; font-size: 16px; border: 1px solid #ccc; border-radius: 6px; text-align: center; }
+    textarea { width: 100%; padding: 10px; font-size: 16px; border-radius: 6px; border: 1px solid #ccc; margin-bottom: 16px; }
+    button { padding: 12px 24px; font-size: 16px; font-weight: bold; color: white; background-color: #16a34a; border: none; border-radius: 6px; cursor: pointer; display: block; margin: 20px auto 0 auto; }
+    .footer { text-align: center; font-size: 12px; color: #555; padding: 20px; margin-top: 40px; }
+    .resumo { display: flex; justify-content: space-around; padding: 16px; background-color: #e0f2fe; border-radius: 8px; font-weight: bold; color: #1e3a8a; }
+    .resumo div { text-align: center; flex: 1; }
   </style>
 </head>
 <body>
@@ -156,7 +105,6 @@
     }
 
     const nomeAvaliador = dados.nomeAvaliador || localStorage.getItem("avaliadorNome") || dados.avaliador;
-
     document.getElementById("projeto").textContent = dados.projeto;
     document.getElementById("escola").textContent = dados.escola;
     document.getElementById("nivel").textContent = dados.nivel;
@@ -168,7 +116,6 @@
       const avaliacao = {
         ...dados,
         nomeAvaliador,
-        comentario: this.comentario.value.trim(),
         criterio1: +this.criterio1.value,
         criterio2: +this.criterio2.value,
         criterio3: +this.criterio3.value,
@@ -177,22 +124,32 @@
         criterio6: +this.criterio6.value,
         criterio7: +this.criterio7.value,
         criterio8: +this.criterio8.value,
+        comentario: this.comentario.value.trim(),
+        criadoEm: new Date().toISOString()
       };
 
-      avaliacao.nota = Object.values(avaliacao).filter((_, i) => i >= 4 && i <= 11).reduce((acc, n) => acc + n, 0);
-      avaliacao.criadoEm = new Date().toISOString();
+      avaliacao.nota =
+        avaliacao.criterio1 +
+        avaliacao.criterio2 +
+        avaliacao.criterio3 +
+        avaliacao.criterio4 +
+        avaliacao.criterio5 +
+        avaliacao.criterio6 +
+        avaliacao.criterio7 +
+        avaliacao.criterio8;
 
       try {
         const app = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js");
         const firestore = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
-        const appInit = app.initializeApp({
+        const firebaseConfig = {
           apiKey: "AIzaSyAq3c957QKO6Ygq-f0NwDXWmuwZxkjNe1c",
           authDomain: "seducitarema-185aa.firebaseapp.com",
           projectId: "seducitarema-185aa",
           storageBucket: "seducitarema-185aa.appspot.com",
           messagingSenderId: "345071170470",
           appId: "1:345071170470:web:469ab81b881e91dd4a1567"
-        });
+        };
+        const appInit = app.initializeApp(firebaseConfig);
         const db = firestore.getFirestore(appInit);
         await firestore.addDoc(firestore.collection(db, "avaliacoes"), avaliacao);
         alert("Avaliação salva com sucesso!");
