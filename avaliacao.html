@@ -59,7 +59,7 @@
 <body>
 
 
-  <div class="header-bar">
+  <div class="header-bar" style="display: flex; justify-content: space-between; align-items: center; gap: 16px;">
     <div class="header-buttons">
       <button class="dark-toggle" onclick="alternarTema()" title="Alternar tema">
         <i id="icone-tema" class="fa-solid fa-moon"></i>
@@ -200,14 +200,13 @@
 
     
 
+
 document.getElementById("form-avaliacao").addEventListener("submit", async function (e) {
   e.preventDefault();
-
   const get = name => {
     const el = this.querySelector(`[name="\${name}"]`);
     return el ? +el.value : 0;
   };
-
   const avaliacao = {
     ...dados,
     nomeAvaliador,
@@ -221,19 +220,10 @@ document.getElementById("form-avaliacao").addEventListener("submit", async funct
     criterio8: get("criterio8"),
     comentario: this.querySelector("[name='comentario']").value.trim(),
     criadoEm: new Date().toISOString(),
-    nota:
-      get("criterio1") +
-      get("criterio2") +
-      get("criterio3") +
-      get("criterio4") +
-      get("criterio5") +
-      get("criterio6") +
-      get("criterio7") +
-      get("criterio8")
+    nota: [1,2,3,4,5,6,7,8].map(n => get("criterio"+n)).reduce((a,b)=>a+b, 0)
   };
-
   try {
-    const docRef = await addDoc(collection(db, "avaliacoes"), avaliacao);
+    await addDoc(collection(db, "avaliacoes"), avaliacao);
     alert("Avaliação salva com sucesso!");
     window.location.href = "avaliador.html";
   } catch (err) {
@@ -241,6 +231,7 @@ document.getElementById("form-avaliacao").addEventListener("submit", async funct
     alert("Erro ao salvar avaliação. Tente novamente.");
   }
 });
+
 
 
   </script>
