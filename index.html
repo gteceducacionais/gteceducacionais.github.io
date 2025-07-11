@@ -97,7 +97,7 @@
 
         if (encontrado) {
   localStorage.setItem("avaliadorLogado", usuario);
-  window.location.href = "avaliador.html";
+  setTimeout(() => { window.location.assign("avaliador.html"); }, 200);
 } else {
           alert("Usuário ou senha de avaliador incorretos.");
         }
