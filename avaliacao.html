@@ -157,7 +157,7 @@
     document.getElementById("projeto").textContent = dados.projeto;
     document.getElementById("escola").textContent = dados.escola;
     document.getElementById("nivel").textContent = dados.nivel;
-    document.getElementById("avaliador").textContent = dados.avaliador;
+    document.getElementById("avaliador").textContent = dados.nomeAvaliador || dados.avaliador;
   document.getElementById("form-avaliacao").addEventListener("submit", async function(e) {
   e.preventDefault();
 
@@ -184,7 +184,7 @@
     criterio7,
     criterio8,
     comentario,
-    notaTotal,
+    nota: notaTotal,
     criadoEm: new Date().toISOString()
   };
 
