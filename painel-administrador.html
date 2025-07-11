@@ -99,7 +99,7 @@
   <div class="tab active" data-aba="avaliadores">Gerenciar Avaliadores</div>
   <div class="tab" data-aba="projetos">Gerenciar Projetos</div>
   <div class="tab" data-aba="avaliacoes">Avaliações Salvas</div>
-  <button onclick="window.location.href='index.html'" class="btn" style="margin-left:auto; padding: 6px 12px; font-size: 13px; background-color: #ef4444;">Sair</button>
+  <button onclick="window.location.href='login.html'" class="btn" style="margin-left:auto; padding: 6px 12px; font-size: 13px; background-color: #ef4444;">Sair</button>
   </div>
   <div class="content">
     <div class="card aba" id="aba-avaliadores">
@@ -144,7 +144,7 @@
   <button id="btnIndividuais" class="btn subtab active">Avaliações Individuais</button>
   <button id="btnRanking" class="btn subtab">Ranking por Projeto</button>
 </div>
-<div id="tabelaContainer">
+<div id="tabelaContainer" style="max-height: 500px; overflow-y: auto;">
   <table>
     <thead>
       <tr><th>Data</th><th>Avaliador</th><th>Escola</th><th>Trabalho</th><th>Nível</th><th>Seção 1</th><th>Seção 2</th><th>Seção 3</th><th>Total</th><th>Ações</th></tr>
@@ -152,7 +152,7 @@
     <tbody id="tabela-avaliacoes"></tbody>
   </table>
 </div>
-<div id="rankingContainer" class="hidden">
+<div id="rankingContainer" class="hidden" style="max-height: 500px; overflow-y: auto;">
   <h3 style="color: #1e3a8a">Ranking por Projeto</h3>
   <div id="ranking-content"></div>
 </div>
@@ -246,12 +246,12 @@
   Object.entries(porNivel).forEach(([nivel, projetos]) => {
     projetos.sort((a, b) => b.media - a.media);
     const tabela = [`<h4 style='color:#2563eb;'>${nivel}</h4>`];
-    tabela.push("<table style='table-layout: fixed; width: 100%;'><thead><tr><th style='width:10%'>Posição</th><th style='width:40%'>Projeto</th><th style='width:30%'>Escola</th><th style='width:20%'>Média</th></tr></thead><tbody>");
+    tabela.push("<table style='table-layout: fixed; width: 100%;'><thead><tr><th style='width:10%'>Posição</th><th style='width:30%'>Projeto</th><th style='width:25%'>Escola</th><th style='width:15%'>Média</th><th style='width:20%'>Soma das Notas</th></tr></thead><tbody>");
     projetos.forEach((p, i) => {
       tabela.push(`<tr><td style='font-weight:bold; display:flex; align-items:center; gap:6px;'>
   <span style='font-size: 18px;'>🏅</span>
   ${i + 1}º lugar
-</td><td>${p.projeto}</td><td>${p.escola}</td><td>${p.media.toFixed(2)}</td></tr>`);
+</td><td>${p.projeto}</td><td>${p.escola}</td><td>${p.media.toFixed(2)}</td><td>${p.total}</td></tr>`);
     });
     tabela.push("</tbody></table>");
     container.innerHTML += tabela.join("");
