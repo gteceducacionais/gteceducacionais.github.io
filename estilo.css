@@ -188,11 +188,6 @@ body.dark-mode .resumo,
 body.dark-mode .total-geral,
 body.dark-mode .resumo div {
   background-color: #334155;
-  color: #f1f5f9;
-  border-color: #475569;
-}
-body.dark-mode .resumo div {
-  background-color: #334155;
   color: #1e3a8a; /* esse é o texto de dentro, como "Seção 1" */
   border-color: #475569;
 }
