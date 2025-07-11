@@ -4,32 +4,35 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Painel de Administração</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <style>
     body { margin: 0; font-family: Arial, sans-serif; background-color: #f1f5f9; }
-    .header, .footer {
-      padding: 16px 24px; background-color: #e2e8f0;
-      font-weight: bold; font-size: 20px; color: #1e3a8a;
-    }
-    .footer { font-size: 12px; text-align: center; color: #555; }
-    .tabs { display: flex; gap: 20px; border-bottom: 1px solid #ccc; padding: 0 24px; background-color: #f8fafc; }
-    .tab { padding: 12px 0; font-weight: 500; cursor: pointer; }
-    .tab.active { border-bottom: 3px solid #2563eb; color: #2563eb; font-weight: bold; }
+    .tabs, .subtabs { display: flex; gap: 20px; padding: 0 24px; background-color: #f8fafc; }
+    .tab, .subtab { padding: 12px 0; font-weight: 500; cursor: pointer; }
+    .tab.active, .subtab.active { border-bottom: 3px solid #2563eb; color: #2563eb; font-weight: bold; }
     .content { padding: 24px; }
     .card { background-color: white; border-radius: 10px; padding: 20px; box-shadow: 0 0 6px rgba(0,0,0,0.1); margin-bottom: 20px; }
+    .header-bar {
+      display: flex; justify-content: space-between; align-items: center;
+      background-color: #2563eb; color: white; padding: 12px 24px; font-weight: bold;
+    }
+    .header-bar i { cursor: pointer; font-size: 18px; }
     table { width: 100%; border-collapse: collapse; margin-top: 10px; }
     th, td { border-bottom: 1px solid #ddd; text-align: left; padding: 8px; }
     th { background-color: #f1f5f9; }
-    .form-grid { display: flex; gap: 12px; margin-top: 16px; flex-wrap: wrap; }
-    .form-grid input, .form-grid select {
-      padding: 10px; border: 1px solid #ccc; border-radius: 6px; flex: 1; min-width: 200px;
-    }
     .btn { background-color: #16a34a; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-size: 14px; cursor: pointer; margin-top: 12px; }
     .delete { color: red; cursor: pointer; font-size: 18px; }
     .hidden { display: none; }
-    #confirm-modal.hidden { display: none !important; }
+    .subtab-container { margin-top: 16px; }
   </style>
 </head>
 <body>
+  <div class="header-bar">
+    <i class="fa-solid fa-moon" title="Alternar tema"></i>
+    <div>Sistema de Avaliação | Feira Municipal de Itarema</div>
+    <i class="fa-solid fa-right-from-bracket" title="Sair" onclick="logout()"></i>
+  </div>
+
   <div class="tabs">
     <div class="tab active" data-aba="avaliadores">Gerenciar Avaliadores</div>
     <div class="tab" data-aba="projetos">Gerenciar Projetos</div>
@@ -37,66 +40,91 @@
   </div>
 
   <div class="content">
-    <!-- Aba Avaliadores -->
+    <!-- Avaliadores -->
     <div class="card aba" id="aba-avaliadores">
-      <h3 style="color: #1e3a8a">Avaliadores Cadastrados</h3>
-      <table>
-        <thead><tr><th>Nome</th><th>Usuário</th><th>Ações</th></tr></thead>
-        <tbody id="tabela-avaliadores"></tbody>
-      </table>
-      <h4 style="color: #2563eb; margin-top: 24px;">Adicionar Novo Avaliador</h4>
-      <div class="form-grid">
-        <input type="text" id="nome" placeholder="Nome do avaliador">
-        <input type="text" id="usuario" placeholder="Login do avaliador">
-        <input type="password" id="senha" placeholder="Senha do avaliador">
+      <h3>Avaliadores Cadastrados</h3>
+      <table><thead><tr><th>Nome</th><th>Usuário</th><th>Ações</th></tr></thead><tbody id="tabela-avaliadores"></tbody></table>
+      <h4 style="margin-top: 24px;">Adicionar Novo Avaliador</h4>
+      <div>
+        <input type="text" id="nome" placeholder="Nome">
+        <input type="text" id="usuario" placeholder="Usuário">
+        <input type="password" id="senha" placeholder="Senha">
+        <button class="btn" id="btnAdicionarAvaliador">Adicionar Avaliador</button>
       </div>
-      <button class="btn" id="btnAdicionarAvaliador">Adicionar Avaliador</button>
     </div>
 
-    <!-- Aba Projetos -->
+    <!-- Projetos -->
     <div class="card aba hidden" id="aba-projetos">
-      <h3 style="color: #1e3a8a">Projetos Cadastrados</h3>
-      <table>
-        <thead><tr><th>Título</th><th>Escola</th><th>Nível</th><th>Ações</th></tr></thead>
-        <tbody id="tabela-projetos"></tbody>
-      </table>
-      <div class="form-grid">
-        <input type="text" id="tituloProjeto" placeholder="Título do projeto">
-        <input type="text" id="escolaProjeto" placeholder="Nome da escola">
-        <select id="nivelProjeto">
-          <option value="Nível I (3º ao 5º ano)">Nível I (3º ao 5º ano)</option>
-          <option value="Nível II (6º ao 9º ano)">Nível II (6º ao 9º ano)</option>
-          <option value="Nível III (EM)">Nível III (EM)</option>
-          <option value="Nível IV (Ceará Científico)">Nível IV (Ceará Científico)</option>
-        </select>
-      </div>
+      <h3>Projetos Cadastrados</h3>
+      <table><thead><tr><th>Projeto</th><th>Escola</th><th>Nível</th><th>Ações</th></tr></thead><tbody id="tabela-projetos"></tbody></table>
+      <h4 style="margin-top: 24px;">Novo Projeto</h4>
+      <input type="text" id="tituloProjeto" placeholder="Título">
+      <input type="text" id="escolaProjeto" placeholder="Escola">
+      <select id="nivelProjeto">
+        <option value="Nível I (3º ao 5º ano)">Nível I</option>
+        <option value="Nível II (6º ao 9º ano)">Nível II</option>
+        <option value="Nível III (EM)">Nível III</option>
+        <option value="Nível IV (Ceará Científico)">Nível IV</option>
+      </select>
       <button class="btn" id="btnAdicionarProjeto">Adicionar Projeto</button>
     </div>
 
-    <!-- Aba Avaliações -->
-    <div class="card aba hidden" id="aba-avaliacoes">
-      <h3 style="color: #1e3a8a">Avaliações Realizadas</h3>
-      <table>
-        <thead><tr><th>Projeto</th><th>Avaliador</th><th>Nota</th><th>Comentário</th><th>Ações</th></tr></thead>
-        <tbody id="tabela-avaliacoes"></tbody>
-      </table>
-    </div>
-  </div>
+    <!-- Avaliações -->
+    <div class="aba hidden" id="aba-avaliacoes">
+      <div class="subtabs">
+        <div class="subtab active" data-subaba="individuais">Avaliações Individuais</div>
+        <div class="subtab" data-subaba="ranking">Ranking por Nível</div>
+      </div>
 
-  <!-- Modal -->
-  <div id="confirm-modal" class="hidden" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.4); display: flex; align-items: center; justify-content: center; z-index: 9999;">
-    <div style="background: white; padding: 20px 30px; border-radius: 10px; max-width: 400px; box-shadow: 0 2px 10px rgba(0,0,0,0.3); text-align: center;">
-      <p id="confirm-text" style="font-size: 16px; color: #1e3a8a; font-weight: bold;">Tem certeza?</p>
-      <div style="margin-top: 20px;">
-        <button id="btn-cancelar" class="btn" style="background-color: #6b7280;">Cancelar</button>
-        <button id="btn-confirmar" class="btn" style="margin-left: 12px;">Confirmar</button>
+      <div class="subtab-container">
+        <!-- Subaba: Individuais -->
+        <div class="card subaba" id="subaba-individuais">
+          <h3>Avaliações Realizadas</h3>
+          <table><thead><tr><th>Projeto</th><th>Avaliador</th><th>Nota</th><th>Comentário</th><th>Ações</th></tr></thead><tbody id="tabela-avaliacoes"></tbody></table>
+        </div>
+
+        <!-- Subaba: Ranking -->
+        <div class="card subaba hidden" id="subaba-ranking">
+          <h3>Ranking por Nível</h3>
+          <div id="ranking-container">[Ranking será gerado aqui]</div>
+        </div>
       </div>
     </div>
   </div>
 
+  <script>
+    function logout() {
+      localStorage.clear();
+      window.location.href = "index.html";
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      // Alternar abas
+      document.querySelectorAll(".tab").forEach(tab => {
+        tab.addEventListener("click", () => {
+          document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+          document.querySelectorAll(".aba").forEach(a => a.classList.add("hidden"));
+          tab.classList.add("active");
+          const abaId = "aba-" + tab.getAttribute("data-aba");
+          document.getElementById(abaId).classList.remove("hidden");
+        });
+      });
+
+      // Alternar subabas
+      document.querySelectorAll(".subtab").forEach(subtab => {
+        subtab.addEventListener("click", () => {
+          document.querySelectorAll(".subtab").forEach(s => s.classList.remove("active"));
+          document.querySelectorAll(".subaba").forEach(sa => sa.classList.add("hidden"));
+          subtab.classList.add("active");
+          document.getElementById("subaba-" + subtab.getAttribute("data-subaba")).classList.remove("hidden");
+        });
+      });
+    });
+  </script>
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getFirestore, collection, getDocs, deleteDoc, doc, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyAq3c957QKO6Ygq-f0NwDXWmuwZxkjNe1c",
@@ -110,135 +138,94 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    function confirmarAcao(mensagem, aoConfirmar) {
-      const modal = document.getElementById("confirm-modal");
-      const texto = document.getElementById("confirm-text");
-      const btnConfirmar = document.getElementById("btn-confirmar");
-      const btnCancelar = document.getElementById("btn-cancelar");
+    function gerarRanking(avaliacoes) {
+      const rankingPorNivel = {};
+      avaliacoes.forEach(av => {
+        const nivel = av.nivel || "Nível não definido";
+        if (!rankingPorNivel[nivel]) rankingPorNivel[nivel] = [];
+        rankingPorNivel[nivel].push(av);
+      });
 
-      texto.textContent = mensagem;
-      modal.classList.remove("hidden");
+      const container = document.getElementById("ranking-container");
+      container.innerHTML = "";
 
-      btnConfirmar.onclick = async () => {
-        modal.classList.add("hidden");
-        try { await aoConfirmar(); } catch (err) { console.error("Erro:", err); }
-      };
-      btnCancelar.onclick = () => modal.classList.add("hidden");
-    }
+      Object.entries(rankingPorNivel).forEach(([nivel, lista]) => {
+        lista.sort((a, b) => (b.nota || 0) - (a.nota || 0));
+        const bloco = document.createElement("div");
+        bloco.style.marginBottom = "24px";
 
-    async function carregarAvaliadores() {
-      const tabela = document.getElementById("tabela-avaliadores");
-      tabela.innerHTML = "";
-      const querySnapshot = await getDocs(collection(db, "avaliadores"));
-      querySnapshot.forEach((docSnap) => {
-        const data = docSnap.data();
-        const tr = document.createElement("tr");
-        tr.innerHTML = `<td>${data.nome}</td><td>${data.usuario}</td><td><span class="delete" data-id="${docSnap.id}" data-tipo="avaliador">🗑️</span></td>`;
-        tabela.appendChild(tr);
+        const titulo = document.createElement("h4");
+        titulo.textContent = nivel;
+        titulo.style.color = "#1e3a8a";
+        bloco.appendChild(titulo);
+
+        const tabela = document.createElement("table");
+        tabela.innerHTML = "<thead><tr><th>Posição</th><th>Projeto</th><th>Escola</th><th>Nota</th></tr></thead>";
+        const tbody = document.createElement("tbody");
+
+        lista.forEach((av, idx) => {
+          const tr = document.createElement("tr");
+          let medalha = idx === 0 ? "🥇" : idx === 1 ? "🥈" : idx === 2 ? "🥉" : "";
+          tr.innerHTML = `
+            <td>${idx + 1} ${medalha}</td>
+            <td>${av.projeto}</td>
+            <td>${av.escola}</td>
+            <td>${av.nota || 0}</td>`;
+          tbody.appendChild(tr);
+        });
+
+        tabela.appendChild(tbody);
+        bloco.appendChild(tabela);
+        container.appendChild(bloco);
       });
     }
 
-    async function carregarProjetos() {
-      const tabela = document.getElementById("tabela-projetos");
-      tabela.innerHTML = "";
-      const querySnapshot = await getDocs(collection(db, "projetos"));
-      querySnapshot.forEach((docSnap) => {
-        const data = docSnap.data();
-        const tr = document.createElement("tr");
-        tr.innerHTML = `<td>${data.nome}</td><td>${data.escola}</td><td>${data.nivel}</td><td><span class="delete" data-id="${docSnap.id}" data-tipo="projeto">🗑️</span></td>`;
-        tabela.appendChild(tr);
-      });
+    function templateAvaliador(data, id) {
+      return `<td>${data.nome}</td><td>${data.usuario}</td><td><span class="delete" data-id="${id}" data-tipo="avaliadores">🗑️</span></td>`;
     }
 
-    async function carregarAvaliacoes() {
+    function templateAvaliacao(data, id) {
+      return `<td>${data.projeto}</td><td>${data.nomeAvaliador || "-"}</td><td>${data.nota || 0}</td><td>${data.comentario || "-"}</td><td><span class="delete" data-id="${id}" data-tipo="avaliacoes">🗑️</span></td>`;
+    }
+
+    document.addEventListener("DOMContentLoaded", async () => {
+      await carregarColecao("avaliadores", "tabela-avaliadores", templateAvaliador);
+      const snapshot = await getDocs(collection(db, "avaliacoes"));
+      const avaliacoes = [];
       const tabela = document.getElementById("tabela-avaliacoes");
       tabela.innerHTML = "";
-      const querySnapshot = await getDocs(collection(db, "avaliacoes"));
-      querySnapshot.forEach((docSnap) => {
+      snapshot.forEach(docSnap => {
         const data = docSnap.data();
+        avaliacoes.push(data);
         const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${data.projeto}</td>
-          <td>${data.nomeAvaliador || data.avaliador}</td>
-          <td>${typeof data.nota === 'number' ? data.nota : parseInt(data.nota) || 0}</td>
-          <td>${data.comentario || "-"}</td>
-          <td><span class="delete" data-id="${docSnap.id}" data-tipo="avaliacao">🗑️</span></td>
-        `;
+        tr.innerHTML = templateAvaliacao(data, docSnap.id);
         tabela.appendChild(tr);
       });
-    }
+      gerarRanking(avaliacoes);
 
-    async function removerDoc(tipo, id, callback) {
-      confirmarAcao(`Deseja remover este ${tipo}?`, async () => {
-        await deleteDoc(doc(db, tipo, id));
-        callback();
-      });
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-      document.getElementById("btnAdicionarAvaliador")?.addEventListener("click", async () => {
-        const nome = document.getElementById("nome").value.trim();
-        const usuario = document.getElementById("usuario").value.trim();
-        const senha = document.getElementById("senha").value.trim();
-        if (!nome || !usuario || !senha) return alert("Preencha todos os campos.");
-        await addDoc(collection(db, "avaliadores"), { nome, usuario, senha });
-        document.getElementById("nome").value = "";
-        document.getElementById("usuario").value = "";
-        document.getElementById("senha").value = "";
-        carregarAvaliadores();
-      });
-
-      document.getElementById("btnAdicionarProjeto")?.addEventListener("click", async () => {
-        const titulo = document.getElementById("tituloProjeto").value.trim();
-        const escola = document.getElementById("escolaProjeto").value.trim();
-        const nivel = document.getElementById("nivelProjeto").value.trim();
-        if (!titulo || !escola || !nivel) return alert("Preencha todos os campos.");
-        await addDoc(collection(db, "projetos"), { nome: titulo, escola, nivel });
-        document.getElementById("tituloProjeto").value = "";
-        document.getElementById("escolaProjeto").value = "";
-        document.getElementById("nivelProjeto").value = "";
-        carregarProjetos();
-      });
-
-      document.body.addEventListener("click", (e) => {
+      document.body.addEventListener("click", async (e) => {
         if (e.target.classList.contains("delete")) {
           const id = e.target.dataset.id;
           const tipo = e.target.dataset.tipo;
-          const tipoPlural = tipo + "s";
-          if (tipo === "avaliador") removerDoc(tipoPlural, id, carregarAvaliadores);
-          else if (tipo === "projeto") removerDoc(tipoPlural, id, carregarProjetos);
-          else if (tipo === "avaliacao") removerDoc(tipoPlural, id, carregarAvaliacoes);
+          if (confirm("Deseja remover este item?")) {
+            await deleteDoc(doc(db, tipo, id));
+            location.reload(); // simples recarregamento por segurança
+          }
         }
       });
-
-      document.querySelectorAll(".tab").forEach(tab => {
-        tab.addEventListener("click", () => {
-          const aba = tab.getAttribute("data-aba");
-          document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
-          document.querySelectorAll(".aba").forEach(c => c.classList.add("hidden"));
-          tab.classList.add("active");
-          document.getElementById(`aba-${aba}`).classList.remove("hidden");
-
-          if (aba === "avaliadores") carregarAvaliadores();
-          if (aba === "projetos") carregarProjetos();
-          if (aba === "avaliacoes") carregarAvaliacoes();
-        });
-      });
-
-      // Carregar aba inicial
-      trocarAba(document.querySelector(".tab.active").getAttribute("data-aba"));
-
-      function trocarAba(aba) {
-        document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
-        document.querySelectorAll(".aba").forEach(c => c.classList.add("hidden"));
-        document.querySelector(`.tab[data-aba="${aba}"]`).classList.add("active");
-        document.getElementById(`aba-${aba}`).classList.remove("hidden");
-
-        if (aba === "avaliadores") carregarAvaliadores();
-        if (aba === "projetos") carregarProjetos();
-        if (aba === "avaliacoes") carregarAvaliacoes();
-      }
     });
+
+    async function carregarColecao(nome, tabelaId, colunas) {
+      const tabela = document.getElementById(tabelaId);
+      tabela.innerHTML = "";
+      const snapshot = await getDocs(collection(db, nome));
+      snapshot.forEach((docSnap) => {
+        const data = docSnap.data();
+        const tr = document.createElement("tr");
+        tr.innerHTML = colunas(data, docSnap.id);
+        tabela.appendChild(tr);
+      });
+    }
   </script>
 </body>
 </html>
