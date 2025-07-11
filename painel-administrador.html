@@ -14,7 +14,20 @@
     table { width: 100%; border-collapse: collapse; margin-top: 16px; }
     th, td { border-bottom: 1px solid #e2e8f0; text-align: left; padding: 10px; }
     th { background-color: #f1f5f9; font-weight: bold; color: #1e3a8a; }
-    .btn { background-color: #16a34a; color: white; border: none; padding: 12px 20px; border-radius: 6px; font-size: 14px; cursor: pointer; margin-top: 12px; transition: background-color 0.2s; }
+    .form-grid { display: flex; gap: 12px; margin-top: 16px; flex-wrap: wrap; }
+    .form-grid input, .form-grid select {
+      padding: 12px; border: 1px solid #ccc; border-radius: 6px;
+      flex: 1; min-width: 200px; font-size: 14px;
+    }
+    .form-grid input:focus, .form-grid select:focus {
+      outline: none; border-color: #2563eb; box-shadow: 0 0 0 2px rgba(37,99,235,0.2);
+    }
+    .btn {
+      background-color: #16a34a; color: white; border: none;
+      padding: 12px 20px; border-radius: 6px;
+      font-size: 14px; cursor: pointer; margin-top: 12px;
+      transition: background-color 0.2s;
+    }
     .btn:hover { background-color: #15803d; }
     .delete { color: red; cursor: pointer; font-size: 18px; transition: opacity 0.2s; }
     .delete:hover { opacity: 0.6; }
@@ -28,6 +41,7 @@
     <div class="tab" data-aba="avaliacoes">Avaliações Salvas</div>
     <button onclick="window.location.href='index.html'" class="btn" style="margin-left:auto;">Sair</button>
   </div>
+
   <div class="content">
     <div class="card aba" id="aba-avaliadores">
       <h3 style="color: #1e3a8a">Avaliadores Cadastrados</h3>
@@ -98,6 +112,18 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+async function carregarAvaliadores() {
+  const tabela = document.getElementById("tabela-avaliadores");
+  tabela.innerHTML = "";
+  const snapshot = await getDocs(collection(db, "avaliadores"));
+  snapshot.forEach(doc => {
+    const data = doc.data();
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td>${data.nome}</td><td>${data.usuario}</td><td><span class="delete" data-id="${doc.id}" data-tipo="avaliador">🗑️</span></td>`;
+    tabela.appendChild(tr);
+  });
+}
+
 async function carregarAvaliacoes() {
   const tabela = document.getElementById("tabela-avaliacoes");
   tabela.innerHTML = "";
@@ -131,28 +157,27 @@ async function carregarRankingProjetos() {
   container.innerHTML = "<p>Carregando...</p>";
   const snapshot = await getDocs(collection(db, "avaliacoes"));
   const agrupado = {};
-  snapshot.forEach(doc => {
+  snapshot.forEach((doc) => {
     const d = doc.data();
     const chave = `${d.nivel}||${d.projeto}`;
     if (!agrupado[chave]) agrupado[chave] = { projeto: d.projeto, escola: d.escola, nivel: d.nivel, total: 0, count: 0 };
     agrupado[chave].total += d.nota || 0;
     agrupado[chave].count++;
   });
-
   const porNivel = {};
   Object.values(agrupado).forEach(item => {
     item.media = item.total / item.count;
     if (!porNivel[item.nivel]) porNivel[item.nivel] = [];
     porNivel[item.nivel].push(item);
   });
-
   container.innerHTML = "";
   Object.entries(porNivel).forEach(([nivel, projetos]) => {
     projetos.sort((a, b) => b.media - a.media);
+    const medalhas = ["🥇", "🥈", "🥉"];
     const tabela = [`<h4 style='color:#2563eb;'>${nivel}</h4>`];
     tabela.push("<table style='width: 100%;'><thead><tr><th>Posição</th><th>Projeto</th><th>Escola</th><th>Média</th><th>Soma</th></tr></thead><tbody>");
     projetos.forEach((p, i) => {
-      tabela.push(`<tr><td>${i + 1}º</td><td>${p.projeto}</td><td>${p.escola}</td><td>${p.media.toFixed(2)}</td><td>${p.total}</td></tr>`);
+      tabela.push(`<tr><td>${medalhas[i] || "🏅"} ${i + 1}º</td><td>${p.projeto}</td><td>${p.escola}</td><td>${p.media.toFixed(2)}</td><td>${p.total}</td></tr>`);
     });
     tabela.push("</tbody></table>");
     container.innerHTML += tabela.join("");
@@ -167,7 +192,7 @@ document.addEventListener("DOMContentLoaded", () => {
       tab.classList.add("active");
       const aba = tab.dataset.aba;
       document.getElementById(`aba-${aba}`).classList.remove("hidden");
-      if (aba === "avaliadores") carregarAvaliadores?.();
+      if (aba === "avaliadores") carregarAvaliadores();
       if (aba === "projetos") carregarProjetos?.();
       if (aba === "avaliacoes") {
         carregarAvaliacoes();
