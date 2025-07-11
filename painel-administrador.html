@@ -303,7 +303,8 @@ document.addEventListener("DOMContentLoaded", () => {
       if (e.target.classList.contains("delete")) {
         const id = e.target.dataset.id;
         const tipo = e.target.dataset.tipo;
-        deleteDoc(doc(db, tipo + "s", id)).then(() => {
+        const colecao = tipo === "avaliador" ? "avaliadores" : tipo === "projeto" ? "projetos" : "avaliacoes";
+        deleteDoc(doc(db, colecao, id)).then(() => {
           if (tipo === "avaliador") carregarAvaliadores();
           if (tipo === "projeto") carregarProjetos();
           if (tipo === "avaliacao") carregarAvaliacoes();
@@ -330,6 +331,22 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   document.querySelector(".tab.active")?.click();
   });
+
+  function showToast(mensagem) {
+  const toast = document.createElement("div");
+  toast.textContent = mensagem;
+  toast.style.position = "fixed";
+  toast.style.bottom = "20px";
+  toast.style.right = "20px";
+  toast.style.background = "#1e3a8a";
+  toast.style.color = "#fff";
+  toast.style.padding = "12px 20px";
+  toast.style.borderRadius = "6px";
+  toast.style.boxShadow = "0 2px 6px rgba(0,0,0,0.2)";
+  toast.style.zIndex = 9999;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 2500);
+}
 </script>
 </body>
 </html>
