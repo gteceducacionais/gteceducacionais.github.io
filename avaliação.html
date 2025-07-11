@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Avaliação do Trabalho</title>
+  <style>
+    body { font-family: Arial, sans-serif; background-color: #f1f5f9; margin: 0; padding: 0; }
+    .top-bar {
+      background-color: #e2e8f0;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 16px 24px; font-weight: bold;
+    }
+    .top-bar span { color: #1e3a8a; }
+    .info-box, .section, .summary {
+      max-width: 800px; margin: 20px auto; background: white;
+      padding: 20px; border-radius: 10px; box-shadow: 0 0 6px rgba(0,0,0,0.1);
+    }
+    .info-box span.label { display: block; font-weight: bold; margin-top: 8px; color: #1e3a8a; }
+    h2 { color: #1d4ed8; }
+    .item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .item input {
+      width: 60px; padding: 6px; font-size: 16px; text-align: center;
+      border-radius: 6px; border: 1px solid #ccc;
+    }
+    .score { text-align: right; font-size: 18px; font-weight: bold; color: #1d4ed8; }
+    .summary-grid {
+      display: flex; justify-content: space-around;
+      padding: 16px; background-color: #e0edff; border-radius: 8px;
+    }
+    .summary-grid div {
+      font-weight: bold; color: #1d4ed8; text-align: center;
+    }
+    .footer {
+      text-align: center; font-size: 12px; color: #555;
+      padding: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="top-bar">
+    <span>Avaliação do Trabalho</span>
+    <span id="avaliador"></span>
+  </div>
+
+  <div class="info-box">
+    <span class="label">Projeto:</span>
+    <div id="projeto"></div>
+    <span class="label">Escola:</span>
+    <div id="escola"></div>
+    <span class="label">Nível:</span>
+    <div id="nivel"></div>
+  </div>
+
+  <div class="section">
+    <h2>Seção 1 – Apresentação do Material Escrito</h2>
+    <div class="item"><span>1.1 Banner</span><input type="number" min="1" max="5" value="1" data-secao="1"></div>
+    <div class="item"><span>1.2 Caderno de campo</span><input type="number" min="1" max="5" value="1" data-secao="1"></div>
+    <div class="score">Pontuação Total da Seção 1: <span id="soma1">2</span></div>
+  </div>
+
+  <div class="section">
+    <h2>Seção 2 – Apresentação Oral</h2>
+    <div class="item"><span>2.1 Clareza, concisão e objetividade</span><input type="number" min="1" max="5" value="1" data-secao="2"></div>
+    <div class="item"><span>2.2 Capacidade de responder perguntas</span><input type="number" min="1" max="5" value="1" data-secao="2"></div>
+    <div class="item"><span>2.3 Atitude cordial e atenção ao visitante</span><input type="number" min="1" max="5" value="1" data-secao="2"></div>
+    <div class="score">Pontuação Total da Seção 2: <span id="soma2">3</span></div>
+  </div>
+
+  <div class="section">
+    <h2>Seção 3 – Desenvolvimento do Trabalho</h2>
+    <div class="item"><span>3.1 Questão central bem definida</span><input type="number" min="1" max="5" value="1" data-secao="3"></div>
+    <div class="item"><span>3.2 Coleta de dados e conclusão coerente</span><input type="number" min="1" max="5" value="1" data-secao="3"></div>
+    <div class="item"><span>3.3 Trabalho em equipe</span><input type="number" min="1" max="5" value="1" data-secao="3"></div>
+    <div class="score">Pontuação Total da Seção 3: <span id="soma3">3</span></div>
+  </div>
+
+  <div class="summary">
+    <h2>Resumo da Avaliação</h2>
+    <div class="summary-grid">
+      <div>Seção 1<br><span id="r1">0</span></div>
+      <div>Seção 2<br><span id="r2">0</span></div>
+      <div>Seção 3<br><span id="r3">0</span></div>
+    </div>
+    <h2 style="text-align: center; margin-top: 16px;">TOTAL GERAL<br><span id="total" style="font-size: 28px;">0</span></h2>
+  </div>
+<div style="text-align:center; margin-top: 16px;">
+  <button onclick="salvarAvaliacao()" style="padding: 12px 24px; font-size: 16px; font-weight: bold; background-color: #16a34a; color: white; border: none; border-radius: 6px; cursor: pointer;">Salvar Avaliação</button>
+</div>
+<div class="footer">
+    &copy; 2025 | Gerência de Tecnologias Educacionais
+  </div>
+
+  <script>
+    const dados = JSON.parse(localStorage.getItem("avaliacaoAtual"));
+    if (!dados) {
+      alert("Nenhuma avaliação iniciada.");
+      window.location.href = "avaliador.html";
+    }
+    document.getElementById("avaliador").textContent = `Avaliador: ${dados.avaliador}`;
+    document.getElementById("projeto").textContent = dados.projeto;
+    document.getElementById("escola").textContent = dados.escola;
+    document.getElementById("nivel").textContent = dados.nivel;
+
+    function atualizarPontuacao() {
+      const secoes = [1, 2, 3];
+      let total = 0;
+
+      secoes.forEach(secao => {
+        const inputs = document.querySelectorAll(`input[data-secao='${secao}']`);
+        let soma = 0;
+        inputs.forEach(input => {
+          soma += parseInt(input.value) || 0;
+        });
+        document.getElementById(`soma${secao}`).textContent = soma;
+        document.getElementById(`r${secao}`).textContent = soma;
+        total += soma;
+      });
+
+      document.getElementById("total").textContent = total;
+    }
+
+    document.querySelectorAll("input[type='number']").forEach(input => {
+      input.addEventListener("input", atualizarPontuacao);
+    });
+
+    atualizarPontuacao();
+  </script>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAq3c957QKO6Ygq-f0NwDXWmuwZxkjNe1c",
+    authDomain: "seducitarema-185aa.firebaseapp.com",
+    projectId: "seducitarema-185aa",
+    storageBucket: "seducitarema-185aa.appspot.com",
+    messagingSenderId: "345071170470",
+    appId: "1:345071170470:web:469ab81b881e91dd4a1567"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  window.salvarAvaliacao = async function () {
+    const dados = JSON.parse(localStorage.getItem("avaliacaoAtual"));
+    if (!dados) return alert("Nenhuma avaliação carregada.");
+
+    const secoes = [1, 2, 3];
+    const avaliacao = {
+      projeto: dados.projeto,
+      escola: dados.escola,
+      nivel: dados.nivel,
+      avaliador: dados.avaliador,
+      notaTotal: 0,
+      criadoEm: new Date().toISOString(),
+    };
+
+    secoes.forEach(secao => {
+      const inputs = document.querySelectorAll(`input[data-secao='${secao}']`);
+      const respostas = [];
+      let soma = 0;
+      inputs.forEach((input, index) => {
+        const nota = parseInt(input.value);
+        respostas.push({ item: `${secao}.${index + 1}`, nota });
+        soma += nota;
+      });
+      avaliacao[`secao${secao}`] = respostas;
+      avaliacao[`totalSecao${secao}`] = soma;
+      avaliacao.notaTotal += soma;
+    });
+
+    await addDoc(collection(db, "avaliacoes"), avaliacao);
+    alert("Avaliação salva com sucesso!");
+    window.location.href = "avaliador.html";
+  };
+</script>
+</body>
+</html>
