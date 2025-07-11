@@ -26,22 +26,13 @@ body {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
-h1 {
-  font-size: 26px;
-  color: var(--azul-escuro);
-  margin-bottom: 12px;
-}
-
-h2 {
-  font-size: 20px;
-  margin-top: 32px;
+h1, h2, h3 {
   color: var(--azul-escuro);
 }
 
-h3 {
-  font-size: 18px;
-  color: var(--azul-escuro);
-}
+h1 { font-size: 26px; margin-bottom: 12px; }
+h2 { font-size: 20px; margin-top: 32px; }
+h3 { font-size: 18px; }
 
 .info-bar {
   background-color: #e0f2fe;
@@ -80,12 +71,15 @@ label {
   font-size: 15px;
 }
 
+input[type="number"], textarea {
+  font-size: 16px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
 input[type="number"] {
   width: 60px;
   padding: 6px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
   text-align: center;
   margin-left: 12px;
 }
@@ -93,9 +87,6 @@ input[type="number"] {
 textarea {
   width: 100%;
   padding: 10px;
-  font-size: 16px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
   margin-top: 8px;
 }
 
@@ -135,16 +126,22 @@ button:hover {
   margin-bottom: 12px;
 }
 
-.resumo div {
+.resumo-item {
   flex: 1;
-  text-align: center;
   background-color: white;
-  margin: 4px;
+  padding: 16px;
   border-radius: 8px;
-  padding: 12px;
+  text-align: center;
   font-size: 14px;
   border: 1px solid var(--borda);
-  color: var(--azul-escuro); /* adicionado para manter visível no dark mode também */
+  color: var(--azul-escuro);
+}
+
+.resumo-item span {
+  display: block;
+  font-size: 20px;
+  font-weight: bold;
+  color: #2563eb;
 }
 
 .total-geral {
@@ -192,30 +189,16 @@ body.dark-mode .total-geral {
   color: #f1f5f9;
   border-color: #475569;
 }
-.resumo-item {
-  flex: 1;
-  background-color: white;
-  padding: 16px;
-  border-radius: 8px;
-  text-align: center;
-}
-
-.resumo-item span {
-  display: block;
-  font-size: 20px;
-  font-weight: bold;
-  color: #2563eb;
-}
 
 body.dark-mode .resumo-item {
   background-color: #1e293b;
   color: #f1f5f9;
+  border-color: #475569;
 }
 
 body.dark-mode .resumo-item span {
   color: #93c5fd;
 }
-
 
 * {
   transition: background-color 0.3s ease, color 0.3s ease;
