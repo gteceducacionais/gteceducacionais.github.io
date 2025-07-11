@@ -1,24 +1,27 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Avaliação</title>
-  <link rel="stylesheet" href="estilo.css" />
+  <link rel="stylesheet" href="estilo_darkmode.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
+  <button class="dark-toggle" onclick="alternarTema()">Alternar tema</button>
+
   <div class="info-bar">
-    <h1 style="color: #2563eb; font-size: 22px; margin: 0;"><i class="fa-solid fa-clipboard-list"></i> Avaliação do Trabalho</h1>
-    <div style="font-size: 14px; color: #374151;">Avaliador: <span id="avaliador"></span></div>
+    <h1><i class="fa-solid fa-clipboard-list"></i> Avaliação do Trabalho</h1>
+    <div>Avaliador: <span id="avaliador"></span></div>
   </div>
 
   <div class="container">
     <h1><i class="fa-solid fa-file-alt"></i> Avaliação do Projeto</h1>
-    <div style="background-color: #eaf4ff; padding: 16px; border-radius: 10px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; margin-bottom: 24px;">
-      <div><strong>Projeto:</strong><br><span id="projeto" style="color:#1d4ed8; font-weight:bold;"></span></div>
-      <div><strong>Escola:</strong><br><span id="escola" style="color:#1d4ed8; font-weight:bold;"></span></div>
-      <div><strong>Nível:</strong><br><span id="nivel" style="color:#1d4ed8; font-weight:bold;"></span></div>
+    <div class="resumo-projeto">
+      <div><strong>Projeto:</strong><br><span id="projeto"></span></div>
+      <div><strong>Escola:</strong><br><span id="escola"></span></div>
+      <div><strong>Nível:</strong><br><span id="nivel"></span></div>
     </div>
 
     <form id="form-avaliacao">
@@ -26,7 +29,7 @@
         <h2><i class="fa-solid fa-book"></i> Seção 1 – Apresentação do Material Escrito</h2>
         <label>1.1 Banner <input type="number" name="criterio1" min="1" max="5" value="1" required /></label>
         <label>1.2 Caderno de campo <input type="number" name="criterio2" min="1" max="5" value="1" required /></label>
-        <p><strong>Pontuação Total da Seção 1:</strong> <span id="total1">2</span></p>
+        <p><strong>Total:</strong> <span id="total1">2</span></p>
       </section>
 
       <section>
@@ -34,7 +37,7 @@
         <label>2.1 Clareza, concisão e objetividade <input type="number" name="criterio3" min="1" max="5" value="1" required /></label>
         <label>2.2 Capacidade de responder perguntas <input type="number" name="criterio4" min="1" max="5" value="1" required /></label>
         <label>2.3 Atitude cordial e atenção ao visitante <input type="number" name="criterio5" min="1" max="5" value="1" required /></label>
-        <p><strong>Pontuação Total da Seção 2:</strong> <span id="total2">3</span></p>
+        <p><strong>Total:</strong> <span id="total2">3</span></p>
       </section>
 
       <section>
@@ -42,7 +45,7 @@
         <label>3.1 Questão central bem definida <input type="number" name="criterio6" min="1" max="5" value="1" required /></label>
         <label>3.2 Coleta de dados e conclusão coerente <input type="number" name="criterio7" min="1" max="5" value="1" required /></label>
         <label>3.3 Trabalho em equipe <input type="number" name="criterio8" min="1" max="5" value="1" required /></label>
-        <p><strong>Pontuação Total da Seção 3:</strong> <span id="total3">3</span></p>
+        <p><strong>Total:</strong> <span id="total3">3</span></p>
       </section>
 
       <div class="resumo">
@@ -143,6 +146,19 @@
       } catch (err) {
         console.error("Erro ao salvar avaliação:", err);
         alert("Erro ao salvar avaliação. Tente novamente.");
+      }
+    });
+
+    function alternarTema() {
+      const body = document.body;
+      body.classList.toggle("dark-mode");
+      localStorage.setItem("tema", body.classList.contains("dark-mode") ? "escuro" : "claro");
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const temaSalvo = localStorage.getItem("tema");
+      if (temaSalvo === "escuro") {
+        document.body.classList.add("dark-mode");
       }
     });
   </script>
