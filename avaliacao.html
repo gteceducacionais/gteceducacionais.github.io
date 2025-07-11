@@ -64,7 +64,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Avaliação</title>
-  <link rel="stylesheet" href="estilo.css" />
+  <link rel="stylesheet" href="estilo_visual_igual_ao_layout.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <style>
     :root {
@@ -262,10 +262,14 @@
     document.getElementById("avaliador").textContent = nomeAvaliador;
 
     
+
 document.getElementById("form-avaliacao").addEventListener("submit", async function (e) {
   e.preventDefault();
 
-  const get = name => +this.querySelector(`[name="${name}"]`).value;
+  const get = name => {
+    const el = this.querySelector(`[name="\${name}"]`);
+    return el ? +el.value : 0;
+  };
 
   const avaliacao = {
     ...dados,
@@ -292,7 +296,7 @@ document.getElementById("form-avaliacao").addEventListener("submit", async funct
   };
 
   try {
-    await addDoc(collection(db, "avaliacoes"), avaliacao);
+    const docRef = await addDoc(collection(db, "avaliacoes"), avaliacao);
     alert("Avaliação salva com sucesso!");
     window.location.href = "avaliador.html";
   } catch (err) {
@@ -300,6 +304,7 @@ document.getElementById("form-avaliacao").addEventListener("submit", async funct
     alert("Erro ao salvar avaliação. Tente novamente.");
   }
 });
+
 
   </script>
 </body>
