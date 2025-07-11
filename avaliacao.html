@@ -159,7 +159,7 @@
     document.getElementById("projeto").textContent = dados.projeto;
     document.getElementById("escola").textContent = dados.escola;
     document.getElementById("nivel").textContent = dados.nivel;
-    const nomeAvaliador = localStorage.getItem("avaliadorNome") || dados.nomeAvaliador || dados.avaliador;
+    const nomeAvaliador = dados.nomeAvaliador || localStorage.getItem("avaliadorNome") || dados.avaliador;
 document.getElementById("avaliador").textContent = nomeAvaliador;
   document.getElementById("form-avaliacao").addEventListener("submit", async function(e) {
   e.preventDefault();
