@@ -66,7 +66,7 @@
   <div class="container">
     <img src="Logo__Feira_de_Ciências_Horizontal.png" alt="Logo Feira de Ciências" class="logo" />
     <h2>Acesso ao Sistema</h2>
-    <form onsubmit="return login();">
+    <form id="login-form">
       <label for="tipo">Tipo de Usuário</label>
       <select id="tipo">
         <option value="Administrador">Administrador</option>
@@ -83,29 +83,61 @@
     &copy; 2025 | Gerência de Tecnologias Educacionais
   </div>
 
-  <script>
-  function login() {
-    const tipo = document.getElementById("tipo").value;
-    const usuario = document.getElementById("usuario").value.trim();
-    const senha = document.getElementById("senha").value.trim();
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-    if (!usuario || !senha) {
-      alert("Preencha todos os campos.");
-      return false;
-    }
+    const firebaseConfig = {
+      apiKey: "AIzaSyAq3c957QKO6Ygq-f0NwDXWmuwZxkjNe1c",
+      authDomain: "seducitarema-185aa.firebaseapp.com",
+      projectId: "seducitarema-185aa",
+      storageBucket: "seducitarema-185aa.appspot.com",
+      messagingSenderId: "345071170470",
+      appId: "1:345071170470:web:469ab81b881e91dd4a1567"
+    };
 
-    if (tipo === "Administrador") {
-      if (usuario === "Admin" && senha === "admin@124") {
-        window.location.href = "painel-administrador.html";
-      } else {
-        alert("Usuário ou senha de administrador incorretos.");
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    document.getElementById("login-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const tipo = document.getElementById("tipo").value;
+      const usuario = document.getElementById("usuario").value.trim();
+      const senha = document.getElementById("senha").value.trim();
+
+      if (!usuario || !senha) {
+        alert("Preencha todos os campos.");
+        return;
       }
-    } else {
-      alert("Login de avaliador: " + usuario);
-    }
 
-    return false;
-  }
-</script>
+      if (tipo === "Administrador") {
+        if (usuario === "Admin" && senha === "admin@124") {
+          window.location.href = "painel-administrador.html";
+        } else {
+          alert("Usuário ou senha de administrador incorretos.");
+        }
+      } else {
+        // Login de avaliador (verifica no Firestore)
+        const querySnapshot = await getDocs(collection(db, "avaliadores"));
+        let encontrado = false;
+
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          if (data.usuario === usuario && data.senha === senha) {
+            encontrado = true;
+          }
+        });
+
+        if (encontrado) {
+          alert("Login efetuado como avaliador. Redirecionando...");
+          // Redirecionar para página do avaliador (ex: avaliador.html)
+          // window.location.href = "avaliador.html";
+        } else {
+          alert("Usuário ou senha de avaliador incorretos.");
+        }
+      }
+    });
+  </script>
 </body>
 </html>
