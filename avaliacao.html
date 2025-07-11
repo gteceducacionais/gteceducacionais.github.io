@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -7,31 +8,6 @@
   <link rel="stylesheet" href="estilo.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <style>
-        .top-bar {
-      background-color: #2563eb;
-      color: white;
-      padding: 12px 24px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-    .top-bar .titulo {
-      font-weight: bold;
-      font-size: 16px;
-    }
-    .info-bar {
-      background-color: #e0f2fe;
-      padding: 16px 24px;
-      display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      font-size: 14px;
-      color: #1e3a8a;
-    }
-    .info-bar > div {
-      margin: 4px 0;
-    }
     .resumo-container {
       background-color: #e0f2fe;
       padding: 16px;
@@ -82,21 +58,116 @@
   </style>
 </head>
 <body>
-  <div class="top-bar">
-    <div class="titulo">
-      <i class="fa-solid fa-screwdriver-wrench"></i>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Avaliação</title>
+  <link rel="stylesheet" href="estilo_visual_igual_ao_layout.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <style>
+    :root {
+      --azul: #2563eb;
+      --azul-claro: #e0f2fe;
+      --texto-claro: #1e3a8a;
+      --dark-bg: #1e293b;
+      --dark-text: #f1f5f9;
+    }
+    body.dark-mode {
+      background-color: var(--dark-bg);
+      color: var(--dark-text);
+    }
+    .header-bar {
+      background-color: var(--azul);
+      color: white;
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .header-bar .center-title {
+      font-weight: bold;
+      text-align: center;
+      flex: 1;
+    }
+    .header-buttons {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+    .dark-toggle {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 18px;
+      cursor: pointer;
+    }
+    .logout-btn {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 18px;
+      cursor: pointer;
+    }
+    .info-bar {
+      background-color: var(--azul-claro);
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      font-size: 14px;
+      color: var(--texto-claro);
+    }
+  </style>
+</head>
+
+  <div class="header-bar">
+    <div class="header-buttons">
+      <button class="dark-toggle" onclick="alternarTema()" title="Alternar tema">
+        <i id="icone-tema" class="fa-solid fa-moon"></i>
+      </button>
+    </div>
+    <div class="center-title">
       Sistema de Avaliação | Feira Municipal de Itarema
     </div>
-    <div class="avaliador">Avaliador: <span id="avaliador"></span></div>
+    <div class="header-buttons">
+      <button class="logout-btn" onclick="window.location.href='avaliador.html'" title="Sair">
+        <i class="fa-solid fa-right-from-bracket"></i>
+      </button>
+    </div>
   </div>
 
   <div class="info-bar">
     <div><strong>Projeto:</strong> <span id="projeto"></span></div>
     <div><strong>Escola:</strong> <span id="escola"></span></div>
     <div><strong>Nível:</strong> <span id="nivel"></span></div>
+    <div><strong>Avaliador:</strong> <span id="avaliador"></span></div>
   </div>
 
-  <div class="container">
+  <script>
+    function alternarTema() {
+      const body = document.body;
+      const icone = document.getElementById("icone-tema");
+      body.classList.toggle("dark-mode");
+      const modo = body.classList.contains("dark-mode") ? "escuro" : "claro";
+      localStorage.setItem("tema", modo);
+      icone.className = modo === "escuro" ? "fa-solid fa-sun" : "fa-solid fa-moon";
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const temaSalvo = localStorage.getItem("tema");
+      const body = document.body;
+      const icone = document.getElementById("icone-tema");
+      if (temaSalvo === "escuro") {
+        body.classList.add("dark-mode");
+        icone.className = "fa-solid fa-sun";
+      }
+    });
+  </script>
+
+</html>
+<div class="container">
     <h1><i class="fa-solid fa-file-alt"></i> Avaliação do Projeto</h1>
     <form id="form-avaliacao">
       <section>
