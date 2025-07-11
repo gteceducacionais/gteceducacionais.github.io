@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel do Avaliador</title>
+  <style>
+    body { font-family: Arial, sans-serif; background-color: #f1f5f9; margin: 0; padding: 0; }
+    .container {
+      max-width: 600px;
+      margin: 40px auto;
+      background-color: white;
+      padding: 24px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      color: #1e3a8a;
+      margin-bottom: 24px;
+    }
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: bold;
+    }
+    select, input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 16px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      box-sizing: border-box;
+    }
+    input[readonly] {
+      background-color: #f9fafb;
+    }
+    button {
+      width: 100%;
+      background-color: #2563eb;
+      color: white;
+      padding: 12px;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #e2e8f0;
+      padding: 16px 24px;
+    }
+    .top-bar h1 {
+      font-size: 20px;
+      color: #1e3a8a;
+      margin: 0;
+    }
+    .top-bar a {
+      text-decoration: none;
+      color: #1e3a8a;
+      font-weight: bold;
+      font-size: 14px;
+    }
+    .footer {
+      text-align: center;
+      font-size: 12px;
+      color: #555;
+      padding: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="top-bar">
+    <h1>Informações do Trabalho</h1>
+    <a href="index.html">&#x1F6AA; Sair</a>
+  </div>
+
+  <div class="container">
+    <label for="projeto">Selecione o Projeto</label>
+    <select id="projeto">
+      <option value="">-- Selecione um projeto --</option>
+    </select>
+
+    <label for="escola">Escola</label>
+    <input type="text" id="escola" readonly>
+
+    <label for="nivel">Nível</label>
+    <input type="text" id="nivel" readonly>
+
+    <button id="iniciar">Iniciar Avaliação</button>
+  </div>
+
+  <div class="footer">
+    &copy; 2025 | Gerência de Tecnologias Educacionais
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, collection, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAq3c957QKO6Ygq-f0NwDXWmuwZxkjNe1c",
+      authDomain: "seducitarema-185aa.firebaseapp.com",
+      projectId: "seducitarema-185aa",
+      storageBucket: "seducitarema-185aa.appspot.com",
+      messagingSenderId: "345071170470",
+      appId: "1:345071170470:web:469ab81b881e91dd4a1567"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const projetoSelect = document.getElementById("projeto");
+    const escolaInput = document.getElementById("escola");
+    const nivelInput = document.getElementById("nivel");
+
+    async function carregarProjetos() {
+      const querySnapshot = await getDocs(collection(db, "projetos"));
+      querySnapshot.forEach((docSnap) => {
+        const data = docSnap.data();
+        const option = document.createElement("option");
+        option.value = docSnap.id;
+        option.textContent = data.nome;
+        option.dataset.escola = data.escola;
+        option.dataset.nivel = data.nivel;
+        projetoSelect.appendChild(option);
+      });
+    }
+
+    projetoSelect.addEventListener("change", () => {
+      const selected = projetoSelect.options[projetoSelect.selectedIndex];
+      escolaInput.value = selected.dataset.escola || "";
+      nivelInput.value = selected.dataset.nivel || "";
+    });
+
+    document.addEventListener("DOMContentLoaded", carregarProjetos);
+  </script>
+</body>
+</html>
