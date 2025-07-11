@@ -76,15 +76,18 @@
   </style>
 </head>
 <body>
-  <div class="container">
+  <div style="background-color: #f1f5f9; padding: 24px; display: flex; justify-content: space-between; align-items: center;">
+  <h1 style="color: #2563eb; font-size: 22px; margin: 0;">Avaliação do Trabalho</h1>
+  <div style="font-size: 14px; color: #374151;">Avaliador: <span id="avaliador"></span></div>
+</div>
+
+<div class="container">
     <h1>Avaliação do Projeto</h1>
-    <div class="info-box">
-      <h2>Informações:</h2>
-      <p><strong>Projeto:</strong> <span id="projeto"></span></p>
-      <p><strong>Escola:</strong> <span id="escola"></span></p>
-      <p><strong>Nível:</strong> <span id="nivel"></span></p>
-      <p><strong>Avaliador:</strong> <span id="avaliador"></span></p>
-    </div>
+    <div style="background-color: #eaf4ff; padding: 16px; border-radius: 10px; display: flex; justify-content: space-between; margin-bottom: 24px;">
+  <div><strong>Projeto:</strong><br><span id="projeto" style="color:#1d4ed8; font-weight:bold;"></span></div>
+  <div><strong>Escola:</strong><br><span id="escola" style="color:#1d4ed8; font-weight:bold;"></span></div>
+  <div><strong>Nível:</strong><br><span id="nivel" style="color:#1d4ed8; font-weight:bold;"></span></div>
+</div>
     <form id="form-avaliacao">
       <section>
         <h2>Seção 1 – Apresentação do Material Escrito</h2>
