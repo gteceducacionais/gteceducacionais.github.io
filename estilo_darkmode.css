@@ -1,0 +1,120 @@
+
+:root {
+  --cor-fundo: #f1f5f9;
+  --cor-texto: #1e3a8a;
+  --cor-container: white;
+  --cor-secundaria: #eaf4ff;
+  --cor-footer: #555;
+  --cor-botao: #16a34a;
+  --cor-botao-hover: #15803d;
+  --cor-resumo: #e0f2fe;
+}
+
+body.dark-mode {
+  --cor-fundo: #1e1e1e;
+  --cor-texto: #cbd5e1;
+  --cor-container: #2a2a2a;
+  --cor-secundaria: #374151;
+  --cor-footer: #aaa;
+  --cor-botao: #22c55e;
+  --cor-botao-hover: #16a34a;
+  --cor-resumo: #334155;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--cor-fundo);
+  color: var(--cor-texto);
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: 900px;
+  margin: 40px auto;
+  background: var(--cor-container);
+  padding: 32px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+h1, h2 {
+  color: var(--cor-texto);
+  margin-top: 0;
+}
+
+section {
+  margin-bottom: 24px;
+  background-color: var(--cor-secundaria);
+  padding: 16px;
+  border-radius: 6px;
+}
+
+label {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin: 8px 0;
+  font-weight: 500;
+  color: var(--cor-texto);
+}
+
+input[type="number"], textarea {
+  padding: 6px;
+  font-size: 16px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  margin-top: 4px;
+  background: #fff;
+  color: #000;
+}
+
+button {
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: bold;
+  color: white;
+  background-color: var(--cor-botao);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  display: block;
+  margin: 20px auto 0 auto;
+  transition: background 0.3s;
+}
+
+button:hover {
+  background-color: var(--cor-botao-hover);
+}
+
+.footer {
+  text-align: center;
+  font-size: 12px;
+  color: var(--cor-footer);
+  padding: 20px;
+  margin-top: 40px;
+}
+
+.resumo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: space-around;
+  padding: 16px;
+  background-color: var(--cor-resumo);
+  border-radius: 8px;
+  font-weight: bold;
+  color: var(--cor-texto);
+}
+
+.dark-toggle {
+  position: absolute;
+  top: 16px;
+  right: 24px;
+  background: none;
+  border: 1px solid var(--cor-texto);
+  color: var(--cor-texto);
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
