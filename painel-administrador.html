@@ -5,21 +5,91 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Painel de Administração</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 0; background: #f1f5f9; }
-    .tabs { display: flex; gap: 20px; border-bottom: 1px solid #ccc; padding: 0 24px; background-color: #f8fafc; }
-    .tab { padding: 12px 0; font-weight: 500; cursor: pointer; }
-    .tab.active { border-bottom: 3px solid #2563eb; color: #2563eb; font-weight: bold; }
-    .content { padding: 24px; }
-    .card { background-color: white; border-radius: 10px; padding: 20px; box-shadow: 0 0 6px rgba(0,0,0,0.1); margin-bottom: 20px; }
-    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-    th, td { border-bottom: 1px solid #ddd; text-align: left; padding: 8px; }
-    th { background-color: #f1f5f9; }
-    .form-grid { display: flex; gap: 12px; margin-top: 16px; flex-wrap: wrap; }
-    .form-grid input, .form-grid select {
-      padding: 10px; border: 1px solid #ccc; border-radius: 6px; flex: 1; min-width: 200px;
+    body { margin: 0; font-family: Arial, sans-serif; background-color: #f1f5f9; }
+    .tabs {
+      display: flex;
+      gap: 20px;
+      border-bottom: 1px solid #ccc;
+      padding: 0 24px;
+      background-color: #f8fafc;
+      font-size: 16px;
     }
-    .btn { background-color: #16a34a; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-size: 14px; cursor: pointer; margin-top: 12px; }
-    .delete { color: red; cursor: pointer; font-size: 18px; }
+    .tab {
+      padding: 12px 0;
+      font-weight: 500;
+      cursor: pointer;
+      color: #1e3a8a;
+    }
+    .tab.active {
+      border-bottom: 3px solid #2563eb;
+      color: #2563eb;
+      font-weight: bold;
+    }
+    .content { padding: 24px; }
+    .card {
+      background-color: white;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      margin-bottom: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 16px;
+    }
+    th, td {
+      border-bottom: 1px solid #e2e8f0;
+      text-align: left;
+      padding: 10px;
+    }
+    th {
+      background-color: #f1f5f9;
+      font-weight: bold;
+      color: #1e3a8a;
+    }
+    .form-grid {
+      display: flex;
+      gap: 12px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+    .form-grid input, .form-grid select {
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      flex: 1;
+      min-width: 200px;
+      font-size: 14px;
+    }
+    .form-grid input:focus, .form-grid select:focus {
+      outline: none;
+      border-color: #2563eb;
+      box-shadow: 0 0 0 2px rgba(37,99,235,0.2);
+    }
+    .btn {
+      background-color: #16a34a;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+      margin-top: 12px;
+      transition: background-color 0.2s;
+    }
+    .btn:hover {
+      background-color: #15803d;
+    }
+    .delete {
+      color: red;
+      cursor: pointer;
+      font-size: 18px;
+      transition: opacity 0.2s;
+    }
+    .delete:hover {
+      opacity: 0.6;
+    }
     .hidden { display: none; }
   </style>
 </head>
@@ -65,90 +135,131 @@
     </div>
 
     <div class="card aba hidden" id="aba-avaliacoes">
-      <h3 style="color: #1e3a8a">Avaliações Salvas</h3>
-      <table>
-        <thead>
-          <tr><th>Data</th><th>Avaliador</th><th>Escola</th><th>Trabalho</th><th>Nível</th><th>Seção 1</th><th>Seção 2</th><th>Seção 3</th><th>Total</th><th>Ações</th></tr>
-        </thead>
-        <tbody id="tabela-avaliacoes"></tbody>
-      </table>
-    </div>
-  </div>
+      <h3 style="color: #1e3a8a">Avaliações Realizadas</h3>
+      
+  <!-- Subabas para Avaliações -->
+<div class="subtabs" style="margin-bottom: 16px; display: flex; gap: 10px;">
+  <button id="btnIndividuais" class="btn subtab active">Avaliações Individuais</button>
+  <button id="btnRanking" class="btn subtab">Ranking por Projeto</button>
+</div>
+<div id="tabelaContainer">
+  <table>
+    <thead>
+      <tr><th>Data</th><th>Avaliador</th><th>Escola</th><th>Trabalho</th><th>Nível</th><th>Seção 1</th><th>Seção 2</th><th>Seção 3</th><th>Total</th><th>Ações</th></tr>
+    </thead>
+    <tbody id="tabela-avaliacoes"></tbody>
+  </table>
+</div>
+<div id="rankingContainer" class="hidden">
+  <h3 style="color: #1e3a8a">Ranking por Projeto</h3>
+  <div id="ranking-content"></div>
+</div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyAq3c957QKO6Ygq-f0NwDXWmuwZxkjNe1c",
-      authDomain: "seducitarema-185aa.firebaseapp.com",
-      projectId: "seducitarema-185aa",
-      storageBucket: "seducitarema-185aa.appspot.com",
-      messagingSenderId: "345071170470",
-      appId: "1:345071170470:web:469ab81b881e91dd4a1567"
-    };
+  const firebaseConfig = {
+    apiKey: "AIzaSyAq3c957QKO6Ygq-f0NwDXWmuwZxkjNe1c",
+    authDomain: "seducitarema-185aa.firebaseapp.com",
+    projectId: "seducitarema-185aa",
+    storageBucket: "seducitarema-185aa.appspot.com",
+    messagingSenderId: "345071170470",
+    appId: "1:345071170470:web:469ab81b881e91dd4a1567"
+  };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
 
-    async function carregarAvaliacoes() {
-      const tabela = document.getElementById("tabela-avaliacoes");
-      if (!tabela) return;
-      tabela.innerHTML = "";
-      const querySnapshot = await getDocs(collection(db, "avaliacoes"));
-      querySnapshot.forEach((docSnap) => {
-        const data = docSnap.data();
-        const tr = document.createElement("tr");
-        const total1 = (data.criterio1 || 0) + (data.criterio2 || 0);
-        const total2 = (data.criterio3 || 0) + (data.criterio4 || 0) + (data.criterio5 || 0);
-        const total3 = (data.criterio6 || 0) + (data.criterio7 || 0) + (data.criterio8 || 0);
-        const totalGeral = total1 + total2 + total3;
-        const dataFormatada = data.criadoEm ? new Date(data.criadoEm).toLocaleDateString("pt-BR") : "-";
-        tr.innerHTML = `
-          <td>${dataFormatada}</td>
-          <td>${data.nomeAvaliador || data.avaliador}</td>
-          <td>${data.escola}</td>
-          <td>${data.projeto}</td>
-          <td>${data.nivel}</td>
-          <td>${total1}</td>
-          <td>${total2}</td>
-          <td>${total3}</td>
-          <td><strong>${totalGeral}</strong></td>
-          <td><span class="delete" data-id="${docSnap.id}" data-tipo="avaliacao">🗑️</span></td>`;
-        tabela.appendChild(tr);
-      });
-    }
+  async function carregarAvaliadores() {
+    const tabela = document.getElementById("tabela-avaliadores");
+    tabela.innerHTML = "";
+    const snapshot = await getDocs(collection(db, "avaliadores"));
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td>${data.nome}</td><td>${data.usuario}</td><td><span class="delete" data-id="${doc.id}" data-tipo="avaliador">🗑️</span></td>`;
+      tabela.appendChild(tr);
+    });
+  }
 
-    async function carregarAvaliadores() {
-      const tabela = document.getElementById("tabela-avaliadores");
-      tabela.innerHTML = "";
-      const querySnapshot = await getDocs(collection(db, "avaliadores"));
-      querySnapshot.forEach((docSnap) => {
-        const data = docSnap.data();
-        const tr = document.createElement("tr");
-        tr.innerHTML = `<td>${data.nome}</td><td>${data.usuario}</td><td><span class="delete" data-id="${docSnap.id}" data-tipo="avaliador">🗑️</span></td>`;
-        tabela.appendChild(tr);
-      });
-    }
+  async function carregarProjetos() {
+    const tabela = document.getElementById("tabela-projetos");
+    tabela.innerHTML = "";
+    const snapshot = await getDocs(collection(db, "projetos"));
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td>${data.nome}</td><td>${data.escola}</td><td>${data.nivel}</td><td><span class="delete" data-id="${doc.id}" data-tipo="projeto">🗑️</span></td>`;
+      tabela.appendChild(tr);
+    });
+  }
 
-    async function carregarProjetos() {
-      const tabela = document.getElementById("tabela-projetos");
-      tabela.innerHTML = "";
-      const querySnapshot = await getDocs(collection(db, "projetos"));
-      querySnapshot.forEach((docSnap) => {
-        const data = docSnap.data();
-        const tr = document.createElement("tr");
-        tr.innerHTML = `<td>${data.nome}</td><td>${data.escola}</td><td>${data.nivel}</td><td><span class="delete" data-id="${docSnap.id}" data-tipo="projeto">🗑️</span></td>`;
-        tabela.appendChild(tr);
-      });
-    }
+  async function carregarAvaliacoes() {
+    const tabela = document.getElementById("tabela-avaliacoes");
+    tabela.innerHTML = "";
+    const snapshot = await getDocs(collection(db, "avaliacoes"));
+    snapshot.forEach(doc => {
+      const d = doc.data();
+      const total1 = (d.criterio1 || 0) + (d.criterio2 || 0);
+      const total2 = (d.criterio3 || 0) + (d.criterio4 || 0) + (d.criterio5 || 0);
+      const total3 = (d.criterio6 || 0) + (d.criterio7 || 0) + (d.criterio8 || 0);
+      const total = total1 + total2 + total3;
+      const dataFormatada = d.criadoEm ? new Date(d.criadoEm).toLocaleDateString("pt-BR") : "-";
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${dataFormatada}</td>
+        <td>${d.nomeAvaliador || d.avaliador}</td>
+        <td>${d.escola}</td>
+        <td>${d.projeto}</td>
+        <td>${d.nivel}</td>
+        <td>${total1}</td>
+        <td>${total2}</td>
+        <td>${total3}</td>
+        <td><strong>${total}</strong></td>
+        <td><span class="delete" data-id="${doc.id}" data-tipo="avaliacao">🗑️</span></td>`;
+      tabela.appendChild(tr);
+    });
+  }
 
+  async function carregarRankingProjetos() {
+  const container = document.getElementById("ranking-content");
+  container.innerHTML = "<p>Carregando...</p>";
+  const snapshot = await getDocs(collection(db, "avaliacoes"));
+  const agrupado = {};
+  snapshot.forEach((doc) => {
+    const d = doc.data();
+    const chave = `${d.nivel}||${d.projeto}`;
+    if (!agrupado[chave]) agrupado[chave] = { projeto: d.projeto, escola: d.escola, nivel: d.nivel, total: 0, count: 0 };
+    agrupado[chave].total += d.nota || 0;
+    agrupado[chave].count++;
+  });
+  const porNivel = {};
+  Object.values(agrupado).forEach(item => {
+    item.media = item.total / item.count;
+    if (!porNivel[item.nivel]) porNivel[item.nivel] = [];
+    porNivel[item.nivel].push(item);
+  });
+  container.innerHTML = "";
+  Object.entries(porNivel).forEach(([nivel, projetos]) => {
+    projetos.sort((a, b) => b.media - a.media);
+    const tabela = [`<h4 style='color:#2563eb;'>${nivel}</h4>`];
+    tabela.push("<table><thead><tr><th>Posição</th><th>Projeto</th><th>Escola</th><th>Média</th></tr></thead><tbody>");
+    projetos.forEach((p, i) => {
+      tabela.push(`<tr><td>${i + 1}</td><td>${p.projeto}</td><td>${p.escola}</td><td>${p.media.toFixed(2)}</td></tr>`);
+    });
+    tabela.push("</tbody></table>");
+    container.innerHTML += tabela.join("");
+  });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll(".tab").forEach(tab => {
       tab.addEventListener("click", () => {
         document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
-        document.querySelectorAll(".aba").forEach(a => a.classList.add("hidden"));
+        document.querySelectorAll(".aba").forEach(c => c.classList.add("hidden"));
         tab.classList.add("active");
-        const aba = tab.dataset.aba;
+        const aba = tab.getAttribute("data-aba");
         document.getElementById(`aba-${aba}`).classList.remove("hidden");
         if (aba === "avaliadores") carregarAvaliadores();
         if (aba === "projetos") carregarProjetos();
@@ -171,7 +282,7 @@
     document.getElementById("btnAdicionarProjeto")?.addEventListener("click", async () => {
       const titulo = document.getElementById("tituloProjeto").value.trim();
       const escola = document.getElementById("escolaProjeto").value.trim();
-      const nivel = document.getElementById("nivelProjeto").value;
+      const nivel = document.getElementById("nivelProjeto").value.trim();
       if (!titulo || !escola || !nivel) return alert("Preencha todos os campos.");
       await addDoc(collection(db, "projetos"), { nome: titulo, escola, nivel });
       document.getElementById("tituloProjeto").value = "";
@@ -192,10 +303,25 @@
       }
     });
 
-    // Inicialização
-    window.addEventListener("DOMContentLoaded", () => {
-      document.querySelector(".tab.active")?.click();
+      const btnInd = document.getElementById("btnIndividuais");
+  const btnRank = document.getElementById("btnRanking");
+  if (btnInd && btnRank) {
+    btnInd.addEventListener("click", () => {
+      btnInd.classList.add("active");
+      btnRank.classList.remove("active");
+      document.getElementById("tabelaContainer").classList.remove("hidden");
+      document.getElementById("rankingContainer").classList.add("hidden");
     });
-  </script>
+    btnRank.addEventListener("click", () => {
+      btnRank.classList.add("active");
+      btnInd.classList.remove("active");
+      document.getElementById("tabelaContainer").classList.add("hidden");
+      document.getElementById("rankingContainer").classList.remove("hidden");
+      carregarRankingProjetos();
+    });
+  }
+  document.querySelector(".tab.active")?.click();
+  });
+</script>
 </body>
 </html>
