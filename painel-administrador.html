@@ -167,7 +167,6 @@ async function carregarAvaliadores() {
   });
 }
 
-
 async function carregarProjetos() {
   const tabela = document.getElementById("tabela-projetos");
   tabela.innerHTML = "";
@@ -240,7 +239,23 @@ async function carregarRankingProjetos() {
     container.innerHTML += tabela.join("");
   });
 }
+document.getElementById("btnAdicionarAvaliador")?.addEventListener("click", async () => {
+  const nome = document.getElementById("nome").value.trim();
+  const usuario = document.getElementById("usuario").value.trim();
+  const senha = document.getElementById("senha").value.trim();
 
+  if (!nome || !usuario || !senha) return alert("Preencha todos os campos.");
+
+  await addDoc(collection(db, "avaliadores"), { nome, usuario, senha });
+
+  document.getElementById("nome").value = "";
+  document.getElementById("usuario").value = "";
+  document.getElementById("senha").value = "";
+
+  carregarAvaliadores();
+});
+
+  
 document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll(".tab").forEach(tab => {
     tab.addEventListener("click", () => {
