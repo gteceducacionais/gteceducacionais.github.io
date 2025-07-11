@@ -57,9 +57,6 @@
       padding: 20px;
       margin-top: 40px;
     }
-    .info-box p span {
-      font-weight: bold;
-    }
     .resumo {
       display: flex;
       justify-content: space-around;
@@ -77,17 +74,18 @@
 </head>
 <body>
   <div style="background-color: #f1f5f9; padding: 24px; display: flex; justify-content: space-between; align-items: center;">
-  <h1 style="color: #2563eb; font-size: 22px; margin: 0;">Avaliação do Trabalho</h1>
-  <div style="font-size: 14px; color: #374151;">Avaliador: <span id="avaliador"></span></div>
-</div>
+    <h1 style="color: #2563eb; font-size: 22px; margin: 0;">Avaliação do Trabalho</h1>
+    <div style="font-size: 14px; color: #374151;">Avaliador: <span id="avaliador"></span></div>
+  </div>
 
-<div class="container">
+  <div class="container">
     <h1>Avaliação do Projeto</h1>
     <div style="background-color: #eaf4ff; padding: 16px; border-radius: 10px; display: flex; justify-content: space-between; margin-bottom: 24px;">
-  <div><strong>Projeto:</strong><br><span id="projeto" style="color:#1d4ed8; font-weight:bold;"></span></div>
-  <div><strong>Escola:</strong><br><span id="escola" style="color:#1d4ed8; font-weight:bold;"></span></div>
-  <div><strong>Nível:</strong><br><span id="nivel" style="color:#1d4ed8; font-weight:bold;"></span></div>
-</div>
+      <div><strong>Projeto:</strong><br><span id="projeto" style="color:#1d4ed8; font-weight:bold;"></span></div>
+      <div><strong>Escola:</strong><br><span id="escola" style="color:#1d4ed8; font-weight:bold;"></span></div>
+      <div><strong>Nível:</strong><br><span id="nivel" style="color:#1d4ed8; font-weight:bold;"></span></div>
+    </div>
+
     <form id="form-avaliacao">
       <section>
         <h2>Seção 1 – Apresentação do Material Escrito</h2>
@@ -112,30 +110,31 @@
         <p><strong>Pontuação Total da Seção 3:</strong> <span id="total3">3</span></p>
       </section>
 
-            <div class="resumo">
+      <div class="resumo">
         <div>Seção 1<br><span id="r1">2</span></div>
         <div>Seção 2<br><span id="r2">3</span></div>
         <div>Seção 3<br><span id="r3">3</span></div>
         <div>Total<br><span id="total">8</span></div>
       </div>
-    </section>
 
       <label>Comentário</label>
-      <textarea name="comentario" rows="4" style="width:100%; margin-bottom: 16px;"></textarea>
+      <textarea name="comentario" rows="4"></textarea>
 
-      <button type="submit" style="background-color: #16a34a;">Salvar Avaliação</button>
+      <button type="submit">Salvar Avaliação</button>
     </form>
   </div>
+
   <div class="footer">
     &copy; 2025 | Gerência de Tecnologias Educacionais
   </div>
 
   <script>
     function atualizarTotais() {
-      let total1 = parseInt(document.querySelector('[name="criterio1"]').value) + parseInt(document.querySelector('[name="criterio2"]').value);
-      let total2 = parseInt(document.querySelector('[name="criterio3"]').value) + parseInt(document.querySelector('[name="criterio4"]').value) + parseInt(document.querySelector('[name="criterio5"]').value);
-      let total3 = parseInt(document.querySelector('[name="criterio6"]').value) + parseInt(document.querySelector('[name="criterio7"]').value) + parseInt(document.querySelector('[name="criterio8"]').value);
-      let totalGeral = total1 + total2 + total3;
+      const criterio = n => parseInt(document.querySelector(`[name="criterio${n}"]`).value);
+      const total1 = criterio(1) + criterio(2);
+      const total2 = criterio(3) + criterio(4) + criterio(5);
+      const total3 = criterio(6) + criterio(7) + criterio(8);
+      const totalGeral = total1 + total2 + total3;
 
       document.getElementById("total1").textContent = total1;
       document.getElementById("total2").textContent = total2;
@@ -147,9 +146,7 @@
     }
 
     document.addEventListener("input", (e) => {
-      if (e.target.matches('input[type="number"]')) {
-        atualizarTotais();
-      }
+      if (e.target.matches('input[type="number"]')) atualizarTotais();
     });
 
     const dados = JSON.parse(localStorage.getItem("avaliacaoAtual"));
@@ -158,65 +155,53 @@
       window.location.href = "avaliador.html";
     }
 
+    const nomeAvaliador = dados.nomeAvaliador || localStorage.getItem("avaliadorNome") || dados.avaliador;
+
     document.getElementById("projeto").textContent = dados.projeto;
     document.getElementById("escola").textContent = dados.escola;
     document.getElementById("nivel").textContent = dados.nivel;
-    const nomeAvaliador = dados.nomeAvaliador || localStorage.getItem("avaliadorNome") || dados.avaliador;
-document.getElementById("avaliador").textContent = nomeAvaliador;
-  document.getElementById("form-avaliacao").addEventListener("submit", async function(e) {
-  e.preventDefault();
+    document.getElementById("avaliador").textContent = nomeAvaliador;
 
-  const criterio1 = parseInt(this.criterio1.value);
-  const criterio2 = parseInt(this.criterio2.value);
-  const criterio3 = parseInt(this.criterio3.value);
-  const criterio4 = parseInt(this.criterio4.value);
-  const criterio5 = parseInt(this.criterio5.value);
-  const criterio6 = parseInt(this.criterio6.value);
-  const criterio7 = parseInt(this.criterio7.value);
-  const criterio8 = parseInt(this.criterio8.value);
-  const comentario = this.comentario.value.trim();
+    document.getElementById("form-avaliacao").addEventListener("submit", async function (e) {
+      e.preventDefault();
 
-  const notaTotal = criterio1 + criterio2 + criterio3 + criterio4 + criterio5 + criterio6 + criterio7 + criterio8;
+      const avaliacao = {
+        ...dados,
+        nomeAvaliador,
+        comentario: this.comentario.value.trim(),
+        criterio1: +this.criterio1.value,
+        criterio2: +this.criterio2.value,
+        criterio3: +this.criterio3.value,
+        criterio4: +this.criterio4.value,
+        criterio5: +this.criterio5.value,
+        criterio6: +this.criterio6.value,
+        criterio7: +this.criterio7.value,
+        criterio8: +this.criterio8.value,
+      };
 
-  const avaliacao = {
-    ...dados,
-    nomeAvaliador,
-    criterio1,
-    criterio2,
-    criterio3,
-    criterio4,
-    criterio5,
-    criterio6,
-    criterio7,
-    criterio8,
-    comentario,
-    nota: notaTotal,
-    criadoEm: new Date().toISOString()
-  };
+      avaliacao.nota = Object.values(avaliacao).filter((_, i) => i >= 4 && i <= 11).reduce((acc, n) => acc + n, 0);
+      avaliacao.criadoEm = new Date().toISOString();
 
-  try {
-    const app = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js");
-    const firestore = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyAq3c957QKO6Ygq-f0NwDXWmuwZxkjNe1c",
-      authDomain: "seducitarema-185aa.firebaseapp.com",
-      projectId: "seducitarema-185aa",
-      storageBucket: "seducitarema-185aa.appspot.com",
-      messagingSenderId: "345071170470",
-      appId: "1:345071170470:web:469ab81b881e91dd4a1567"
-    };
-
-    const appInit = app.initializeApp(firebaseConfig);
-    const db = firestore.getFirestore(appInit);
-    await firestore.addDoc(firestore.collection(db, "avaliacoes"), avaliacao);
-    alert("Avaliação salva com sucesso!");
-    window.location.href = "avaliador.html";
-  } catch (err) {
-    console.error("Erro ao salvar avaliação:", err);
-    alert("Erro ao salvar avaliação. Tente novamente.");
-  }
-});
-</script>
+      try {
+        const app = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js");
+        const firestore = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+        const appInit = app.initializeApp({
+          apiKey: "AIzaSyAq3c957QKO6Ygq-f0NwDXWmuwZxkjNe1c",
+          authDomain: "seducitarema-185aa.firebaseapp.com",
+          projectId: "seducitarema-185aa",
+          storageBucket: "seducitarema-185aa.appspot.com",
+          messagingSenderId: "345071170470",
+          appId: "1:345071170470:web:469ab81b881e91dd4a1567"
+        });
+        const db = firestore.getFirestore(appInit);
+        await firestore.addDoc(firestore.collection(db, "avaliacoes"), avaliacao);
+        alert("Avaliação salva com sucesso!");
+        window.location.href = "avaliador.html";
+      } catch (err) {
+        console.error("Erro ao salvar avaliação:", err);
+        alert("Erro ao salvar avaliação. Tente novamente.");
+      }
+    });
+  </script>
 </body>
 </html>
