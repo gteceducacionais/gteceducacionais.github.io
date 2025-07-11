@@ -1,3 +1,4 @@
+
 :root {
   --cor-fundo: #f1f5f9;
   --cor-texto: #1e3a8a;
@@ -27,6 +28,7 @@ body {
   margin: 0;
   padding: 0;
   transition: background-color 0.3s ease, color 0.3s ease;
+  line-height: 1.6;
 }
 
 .container {
@@ -42,6 +44,11 @@ body {
 h1, h2 {
   color: var(--cor-texto);
   margin-top: 0;
+}
+
+h1 i, h2 i {
+  font-size: 1rem;
+  margin-right: 6px;
 }
 
 section {
@@ -69,6 +76,7 @@ input[type="number"], textarea {
   margin-top: 4px;
   background: white;
   color: black;
+  width: 80px;
 }
 
 body.dark-mode input[type="number"],
@@ -88,7 +96,7 @@ button {
   border-radius: 6px;
   cursor: pointer;
   display: block;
-  margin: 20px auto 0 auto;
+  margin: 30px auto 0 auto;
   transition: background-color 0.3s;
 }
 
@@ -131,4 +139,30 @@ button:hover {
 
 .dark-toggle:hover {
   background-color: rgba(100, 100, 100, 0.1);
+}
+
+@media print {
+  .dark-toggle, button {
+    display: none !important;
+  }
+
+  body {
+    background-color: white !important;
+    color: black !important;
+  }
+
+  .container {
+    box-shadow: none !important;
+    background-color: white !important;
+    color: black !important;
+  }
+
+  section {
+    background-color: #f5f5f5 !important;
+  }
+
+  .resumo {
+    background-color: #e0e0e0 !important;
+    color: black !important;
+  }
 }
