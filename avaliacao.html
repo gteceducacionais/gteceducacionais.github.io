@@ -69,6 +69,27 @@
   </div>
 
   <script>
+    function atualizarTotais() {
+      let total1 = parseInt(document.querySelector('[name="criterio1"]').value) + parseInt(document.querySelector('[name="criterio2"]').value);
+      let total2 = parseInt(document.querySelector('[name="criterio3"]').value) + parseInt(document.querySelector('[name="criterio4"]').value) + parseInt(document.querySelector('[name="criterio5"]').value);
+      let total3 = parseInt(document.querySelector('[name="criterio6"]').value) + parseInt(document.querySelector('[name="criterio7"]').value) + parseInt(document.querySelector('[name="criterio8"]').value);
+      let totalGeral = total1 + total2 + total3;
+
+      document.getElementById("total1").textContent = total1;
+      document.getElementById("total2").textContent = total2;
+      document.getElementById("total3").textContent = total3;
+      document.getElementById("r1").textContent = total1;
+      document.getElementById("r2").textContent = total2;
+      document.getElementById("r3").textContent = total3;
+      document.getElementById("total").textContent = totalGeral;
+    }
+
+    document.addEventListener("input", (e) => {
+      if (e.target.matches('input[type="number"]')) {
+        atualizarTotais();
+      }
+    });
+
     const dados = JSON.parse(localStorage.getItem("avaliacaoAtual"));
     if (!dados || !dados.projeto || !dados.avaliador) {
       alert("Acesso não autorizado. Inicie uma avaliação pelo painel.");
