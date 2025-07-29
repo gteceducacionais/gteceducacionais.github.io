@@ -262,6 +262,19 @@ async function carregarRankingProjetos() {
   });
 }
 
+// controle de exibição entre abas de avaliações
+const btnIndividuais = document.getElementById("btnIndividuais");
+const btnRanking = document.getElementById("btnRanking");
+const tabelaContainer = document.getElementById("tabelaContainer");
+const rankingContainer = document.getElementById("rankingContainer");
+
+btnIndividuais?.addEventListener("click", () => {
+  btnIndividuais.classList.add("active");
+  btnRanking.classList.remove("active");
+  tabelaContainer.classList.remove("hidden");
+  rankingContainer.classList.add("hidden");
+});
+
 document.body.addEventListener("click", (e) => {
   if (e.target.classList.contains("delete")) {
     const id = e.target.dataset.id;
