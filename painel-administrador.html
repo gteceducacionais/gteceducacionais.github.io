@@ -6,10 +6,24 @@
   <title>Painel de Administração</title>
 <style>
     @media (max-width: 768px) {
+  .responsive-table td {
+    white-space: normal;
+    word-wrap: break-word;
+  }
+  .responsive-table {
+    display: block;
+    overflow-x: auto;
+  }
       .form-grid { flex-direction: column; }
       .tabs { flex-wrap: wrap; gap: 8px; padding: 12px; }
       .tab { flex: 1 1 auto; text-align: center; padding: 10px 0; }
-      .responsive-table { display: block; overflow-x: auto; white-space: nowrap; }
+      .responsive-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 16px;
+  table-layout: fixed;
+  word-break: break-word;
+}
       th, td {
       vertical-align: middle;
       text-align: center; font-size: 13px; padding: 8px; }
@@ -65,10 +79,18 @@
       background-color: #e0f7fa;
       font-weight: bold;
     }
-#ranking-content td {
-  text-align: center;
-  vertical-align: middle;
-}
+	#ranking-content td {
+	  text-align: center;
+	  vertical-align: middle;
+	  word-break: break-word;
+	  padding: 10px;
+	}
+	#tabelaContainer {
+	  overflow-x: auto;
+	  width: 100%;
+	  margin-top: 12px;
+	}
+
 </style>
 </head>
 <body>
