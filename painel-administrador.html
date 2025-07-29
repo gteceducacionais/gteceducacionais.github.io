@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -7,47 +6,15 @@
   <title>Painel de Administração</title>
   <style>
     @media (max-width: 768px) {
-  .form-grid {
-    flex-direction: column;
-  }
-
-  .tabs {
-    flex-wrap: wrap;
-    gap: 8px;
-    padding: 12px;
-  }
-
-  .tab {
-    flex: 1 1 auto;
-    text-align: center;
-    padding: 10px 0;
-  }
-
-  table {
-    display: block;
-    overflow-x: auto;
-    white-space: nowrap;
-  }
-
-  th, td {
-    font-size: 13px;
-    padding: 8px;
-  }
-
-  .btn {
-    width: 100%;
-    box-sizing: border-box;
-  }
-
-  .subtabs {
-    flex-direction: column;
-  }
-
-  .subtabs .btn {
-    width: 100%;
-    margin-top: 4px;
-  }
-}
+      .form-grid { flex-direction: column; }
+      .tabs { flex-wrap: wrap; gap: 8px; padding: 12px; }
+      .tab { flex: 1 1 auto; text-align: center; padding: 10px 0; }
+      table { display: block; overflow-x: auto; white-space: nowrap; }
+      th, td { font-size: 13px; padding: 8px; }
+      .btn { width: 100%; box-sizing: border-box; }
+      .subtabs { flex-direction: column; }
+      .subtabs .btn { width: 100%; margin-top: 4px; }
+    }
     body { margin: 0; font-family: Arial, sans-serif; background-color: #f1f5f9; }
     .tabs { display: flex; gap: 20px; border-bottom: 1px solid #ccc; padding: 0 24px; background-color: #f8fafc; font-size: 16px; }
     .tab { padding: 12px 0; font-weight: 500; cursor: pointer; color: #1e3a8a; }
@@ -84,61 +51,65 @@
     <div class="tab" data-aba="avaliacoes">Avaliações Salvas</div>
     <button onclick="window.location.href='index.html'" class="btn" style="margin-left:auto;">Sair</button>
   </div>
+	<div class="card aba" id="aba-avaliadores">
+	  <h3>Avaliadores Cadastrados</h3>
+	  <table>
+		<thead><tr><th>Nome</th><th>Usuário</th><th>Ações</th></tr></thead>
+		<tbody id="tabela-avaliadores"></tbody>
+	  </table>
+	  <div class="form-grid">
+		<input type="text" id="nome" placeholder="Nome do avaliador" />
+		<input type="text" id="usuario" placeholder="Login do avaliador" />
+		<input type="password" id="senha" placeholder="Senha do avaliador" />
+	  </div>
+	  <button class="btn" id="btnAdicionarAvaliador">Adicionar Avaliador</button>
+	</div>
+
+<div class="card aba hidden" id="aba-avaliacoes">
+  <h3>Avaliações Realizadas</h3>
+  <div class="subtabs" style="margin-bottom: 16px; display: flex; gap: 10px;">
+    <button id="btnIndividuais" class="btn subtab active">Avaliações Individuais</button>
+    <button id="btnRanking" class="btn subtab">Ranking por Projeto</button>
+  </div>
+  <div id="tabelaContainer">
+    <table>
+      <thead>
+        <tr><th>Data</th><th>Avaliador</th><th>Escola</th><th>Trabalho</th><th>Nível</th><th>Seção 1</th><th>Seção 2</th><th>Seção 3</th><th>Total</th><th>Comentário</th><th>Ações</th></tr>
+      </thead>
+      <tbody id="tabela-avaliacoes"></tbody>
+    </table>
+  </div>
+  <div id="rankingContainer" class="hidden">
+    <div id="ranking-content"></div>
+  </div>
+</div>
 
   <div class="content">
-    <div class="card aba" id="aba-avaliadores">
-      <h3 style="color: #1e3a8a">Avaliadores Cadastrados</h3>
-      <table>
-        <thead><tr><th>Nome</th><th>Usuário</th><th>Ações</th></tr></thead>
-        <tbody id="tabela-avaliadores"></tbody>
-      </table>
-      <div class="form-grid">
-        <input type="text" id="nome" placeholder="Nome do avaliador" />
-        <input type="text" id="usuario" placeholder="Login do avaliador" />
-        <input type="password" id="senha" placeholder="Senha do avaliador" />
-      </div>
-      <button class="btn" id="btnAdicionarAvaliador">Adicionar Avaliador</button>
-    </div>
-
     <div class="card aba hidden" id="aba-projetos">
       <h3 style="color: #1e3a8a">Projetos Cadastrados</h3>
       <table>
-        <thead><tr><th>Projeto</th><th>Escola</th><th>Nível</th><th>Ações</th></tr></thead>
+        <thead><tr><th>Projeto</th><th>Área</th><th>Escola</th><th>Nível</th><th>Ações</th></tr></thead>
         <tbody id="tabela-projetos"></tbody>
       </table>
       <div class="form-grid">
         <input type="text" id="tituloProjeto" placeholder="Título do projeto" />
+        <select id="areaProjeto">
+          <option value="Linguagens e Códigos">Linguagens e Códigos</option>
+          <option value="Ciências da Natureza">Ciências da Natureza</option>
+          <option value="Ciências Humanas">Ciências Humanas</option>
+          <option value="Matemática">Matemática</option>
+        </select>
         <input type="text" id="escolaProjeto" placeholder="Escola" />
         <select id="nivelProjeto">
-          <option value="Nível I (3º ao 5º ano)">Nível I</option>
-          <option value="Nível II (6º ao 9º ano)">Nível II</option>
-          <option value="Nível III (EM)">Nível III</option>
-          <option value="Nível IV (Ceará Científico)">Nível IV</option>
+          <option value="I">Nível I (1º ao 5º ano)</option>
+          <option value="II">Nível II (6º ao 9º ano)</option>
+          <option value="III">Nível III (EJA)</option>
+          <option value="IV">Nível IV (Ceará Científico)</option>
         </select>
       </div>
       <button class="btn" id="btnAdicionarProjeto">Adicionar Projeto</button>
     </div>
-
-    <div class="card aba hidden" id="aba-avaliacoes">
-      <h3 style="color: #1e3a8a">Avaliações Realizadas</h3>
-      <div class="subtabs" style="margin-bottom: 16px; display: flex; gap: 10px;">
-        <button id="btnIndividuais" class="btn subtab active">Avaliações Individuais</button>
-        <button id="btnRanking" class="btn subtab">Ranking por Projeto</button>
-      </div>
-      <div id="tabelaContainer">
-        <table>
-          <thead>
-            <tr><th>Data</th><th>Avaliador</th><th>Escola</th><th>Trabalho</th><th>Nível</th><th>Seção 1</th><th>Seção 2</th><th>Seção 3</th><th>Total</th><th>Comentário</th><th>Ações</th></tr>
-          </thead>
-          <tbody id="tabela-avaliacoes"></tbody>
-        </table>
-      </div>
-      <div id="rankingContainer" class="hidden">
-        <div id="ranking-content"></div>
-      </div>
-    </div>
   </div>
-
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
@@ -154,6 +125,32 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+
+document.getElementById("btnAdicionarProjeto")?.addEventListener("click", async () => {
+  const titulo = document.getElementById("tituloProjeto").value.trim();
+  const escola = document.getElementById("escolaProjeto").value.trim();
+  const nivel = document.getElementById("nivelProjeto").value.trim();
+  const area = document.getElementById("areaProjeto").value.trim();
+  if (!titulo || !escola || !nivel || !area) return alert("Preencha todos os campos.");
+  await addDoc(collection(db, "projetos"), { nome: titulo, escola, nivel, area });
+  document.getElementById("tituloProjeto").value = "";
+  document.getElementById("escolaProjeto").value = "";
+  document.getElementById("nivelProjeto").value = "";
+  document.getElementById("areaProjeto").value = "";
+  carregarProjetos();
+});
+
+document.getElementById("btnAdicionarAvaliador")?.addEventListener("click", async () => {
+  const nome = document.getElementById("nome").value.trim();
+  const usuario = document.getElementById("usuario").value.trim();
+  const senha = document.getElementById("senha").value.trim();
+  if (!nome || !usuario || !senha) return alert("Preencha todos os campos.");
+  await addDoc(collection(db, "avaliadores"), { nome, usuario, senha });
+  document.getElementById("nome").value = "";
+  document.getElementById("usuario").value = "";
+  document.getElementById("senha").value = "";
+  carregarAvaliadores();
+});
 
 async function carregarAvaliadores() {
   const tabela = document.getElementById("tabela-avaliadores");
@@ -174,11 +171,10 @@ async function carregarProjetos() {
   snapshot.forEach(doc => {
     const data = doc.data();
     const tr = document.createElement("tr");
-    tr.innerHTML = `<td>${data.nome}</td><td>${data.escola}</td><td>${data.nivel}</td><td><span class="delete" data-id="${doc.id}" data-tipo="projeto">🗑️</span></td>`;
+    tr.innerHTML = `<td>${data.nome}</td><td>${data.area}</td><td>${data.escola}</td><td>${data.nivel}</td><td><span class="delete" data-id="${doc.id}" data-tipo="projeto">🗑️</span></td>`;
     tabela.appendChild(tr);
   });
 }
-
 
 async function carregarAvaliacoes() {
   const tabela = document.getElementById("tabela-avaliacoes");
@@ -208,29 +204,55 @@ async function carregarAvaliacoes() {
   });
 }
 
+document.getElementById("btnRanking")?.addEventListener("click", () => {
+  document.getElementById("btnRanking").classList.add("active");
+  document.getElementById("btnIndividuais").classList.remove("active");
+  document.getElementById("tabelaContainer").classList.add("hidden");
+  document.getElementById("rankingContainer").classList.remove("hidden");
+  carregarRankingProjetos();
+});
+
 async function carregarRankingProjetos() {
   const container = document.getElementById("ranking-content");
   container.innerHTML = "<p>Carregando...</p>";
-  const snapshot = await getDocs(collection(db, "avaliacoes"));
+  const avaliacoes = await getDocs(collection(db, "avaliacoes"));
+  const projetos = await getDocs(collection(db, "projetos"));
+
+  const mapaProjetos = {};
+  projetos.forEach(p => {
+    const d = p.data();
+    mapaProjetos[d.nome] = {
+      escola: d.escola,
+      nivel: d.nivel,
+      area: d.area
+    };
+  });
+
   const agrupado = {};
-  snapshot.forEach((doc) => {
+  avaliacoes.forEach(doc => {
     const d = doc.data();
-    const chave = `${d.nivel}||${d.projeto}`;
-    if (!agrupado[chave]) agrupado[chave] = { projeto: d.projeto, escola: d.escola, nivel: d.nivel, total: 0, count: 0 };
+    const meta = mapaProjetos[d.projeto];
+    if (!meta) return;
+    const chave = `${meta.nivel}||${meta.area}||${d.projeto}`;
+    if (!agrupado[chave]) agrupado[chave] = { projeto: d.projeto, escola: meta.escola, nivel: meta.nivel, area: meta.area, total: 0, count: 0 };
     agrupado[chave].total += d.nota || 0;
     agrupado[chave].count++;
   });
-  const porNivel = {};
+
+  const porNivelArea = {};
   Object.values(agrupado).forEach(item => {
     item.media = item.total / item.count;
-    if (!porNivel[item.nivel]) porNivel[item.nivel] = [];
-    porNivel[item.nivel].push(item);
+    const chave = `${item.nivel}||${item.area}`;
+    if (!porNivelArea[chave]) porNivelArea[chave] = [];
+    porNivelArea[chave].push(item);
   });
+
   container.innerHTML = "";
-  Object.entries(porNivel).forEach(([nivel, projetos]) => {
+  Object.entries(porNivelArea).forEach(([chave, projetos]) => {
     projetos.sort((a, b) => b.media - a.media);
+    const [nivel, area] = chave.split("||");
     const medalhas = ["🥇", "🥈", "🥉"];
-    const tabela = [`<h4 style='color:#2563eb;'>${nivel}</h4>`];
+    const tabela = [`<h4 style='color:#2563eb;'>${nivel} - ${area}</h4>`];
     tabela.push("<table style='width: 100%;'><thead><tr><th>Posição</th><th>Projeto</th><th>Escola</th><th>Média</th><th>Soma</th></tr></thead><tbody>");
     projetos.forEach((p, i) => {
       tabela.push(`<tr><td>${medalhas[i] || "🏅"} ${i + 1}º</td><td>${p.projeto}</td><td>${p.escola}</td><td>${p.media.toFixed(2)}</td><td>${p.total}</td></tr>`);
@@ -239,23 +261,20 @@ async function carregarRankingProjetos() {
     container.innerHTML += tabela.join("");
   });
 }
-document.getElementById("btnAdicionarAvaliador")?.addEventListener("click", async () => {
-  const nome = document.getElementById("nome").value.trim();
-  const usuario = document.getElementById("usuario").value.trim();
-  const senha = document.getElementById("senha").value.trim();
 
-  if (!nome || !usuario || !senha) return alert("Preencha todos os campos.");
+document.body.addEventListener("click", (e) => {
+  if (e.target.classList.contains("delete")) {
+    const id = e.target.dataset.id;
+    const tipo = e.target.dataset.tipo;
+    const colecao = tipo === "avaliador" ? "avaliadores" : tipo === "projeto" ? "projetos" : "avaliacoes";
 
-  await addDoc(collection(db, "avaliadores"), { nome, usuario, senha });
-
-  document.getElementById("nome").value = "";
-  document.getElementById("usuario").value = "";
-  document.getElementById("senha").value = "";
-
-  carregarAvaliadores();
+    deleteDoc(doc(db, colecao, id)).then(() => {
+      if (tipo === "avaliador") carregarAvaliadores();
+      if (tipo === "projeto") carregarProjetos();
+      if (tipo === "avaliacao") carregarAvaliacoes();
+    }).catch(err => alert("Erro ao excluir: " + err.message));
+  }
 });
-
-  
 document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll(".tab").forEach(tab => {
     tab.addEventListener("click", () => {
@@ -272,48 +291,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   });
-
-  document.getElementById("btnIndividuais").addEventListener("click", () => {
-    document.getElementById("btnIndividuais").classList.add("active");
-    document.getElementById("btnRanking").classList.remove("active");
-    document.getElementById("tabelaContainer").classList.remove("hidden");
-    document.getElementById("rankingContainer").classList.add("hidden");
-  });
-
-  document.getElementById("btnRanking").addEventListener("click", () => {
-    document.getElementById("btnRanking").classList.add("active");
-    document.getElementById("btnIndividuais").classList.remove("active");
-    document.getElementById("tabelaContainer").classList.add("hidden");
-    document.getElementById("rankingContainer").classList.remove("hidden");
-    carregarRankingProjetos();
-  });
-
-  
-document.getElementById("btnAdicionarProjeto")?.addEventListener("click", async () => {
-  const titulo = document.getElementById("tituloProjeto").value.trim();
-  const escola = document.getElementById("escolaProjeto").value.trim();
-  const nivel = document.getElementById("nivelProjeto").value.trim();
-  if (!titulo || !escola || !nivel) return alert("Preencha todos os campos.");
-  await addDoc(collection(db, "projetos"), { nome: titulo, escola, nivel });
-  document.getElementById("tituloProjeto").value = "";
-  document.getElementById("escolaProjeto").value = "";
-  document.getElementById("nivelProjeto").value = "";
-  carregarProjetos();
-});
-
-document.body.addEventListener("click", (e) => {
-  if (e.target.classList.contains("delete")) {
-    const id = e.target.dataset.id;
-    const tipo = e.target.dataset.tipo;
-    const colecao = tipo === "avaliador" ? "avaliadores" : tipo === "projeto" ? "projetos" : "avaliacoes";
-    deleteDoc(doc(db, colecao, id)).then(() => {
-      if (tipo === "avaliador") carregarAvaliadores();
-      if (tipo === "projeto") carregarProjetos();
-      if (tipo === "avaliacao") carregarAvaliacoes();
-    });
-  }
-});
-
   document.querySelector(".tab.active")?.click();
 });
 </script>
