@@ -11,9 +11,10 @@
     word-wrap: break-word;
   }
   .responsive-table {
-    display: block;
-    overflow-x: auto;
-  }
+  overflow-x: auto;
+  display: block;
+  white-space: nowrap;
+}
       .form-grid { flex-direction: column; }
       .tabs { flex-wrap: wrap; gap: 8px; padding: 12px; }
       .tab { flex: 1 1 auto; text-align: center; padding: 10px 0; }
@@ -58,6 +59,7 @@
     .delete { color: red; cursor: pointer; font-size: 18px; transition: opacity 0.2s; }
     .delete:hover { opacity: 0.6; }
     .hidden { display: none; }
+	
     #ranking-content > div {
       margin-bottom: 32px;
       border-top: 1px solid #e2e8f0;
@@ -79,17 +81,19 @@
       background-color: #e0f7fa;
       font-weight: bold;
     }
-	#ranking-content td {
-	  text-align: center;
-	  vertical-align: middle;
-	  word-break: break-word;
-	  padding: 10px;
+#ranking-content td {
+  text-align: center;
+  vertical-align: middle;
+  word-break: break-word;
+  padding: 10px;
 	}
-	#tabelaContainer {
-	  overflow-x: auto;
-	  width: 100%;
-	  margin-top: 12px;
-	}
+#tabelaContainer,
+#aba-projetos table {
+  overflow-x: auto;
+  display: block;
+  white-space: nowrap;
+  width: 100%;
+}
 
 </style>
 </head>
@@ -255,22 +259,33 @@ async function carregarAvaliacoes() {
 }
 
 // botão ranking
-const btnRanking = document.getElementById("btnRanking");
 btnRanking?.addEventListener("click", () => {
   btnRanking.classList.add("active");
-  document.getElementById("btnIndividuais")?.classList.remove("active");
-  document.getElementById("tabelaContainer")?.classList.add("hidden");
-  document.getElementById("rankingContainer")?.classList.remove("hidden");
+  btnIndividuais?.classList.remove("active");
+  const tabela = document.getElementById("tabelaContainer");
+  const ranking = document.getElementById("rankingContainer");
+  if (tabela && ranking) {
+    tabela.classList.add("hidden");
+    ranking.classList.remove("hidden");
+    tabela.style.display = "none";
+    ranking.style.display = "block";
+  }
   carregarRankingProjetos();
 });
 
-const btnIndividuais = document.getElementById("btnIndividuais");
 btnIndividuais?.addEventListener("click", () => {
   btnIndividuais.classList.add("active");
   btnRanking?.classList.remove("active");
-  document.getElementById("tabelaContainer")?.classList.remove("hidden");
-  document.getElementById("rankingContainer")?.classList.add("hidden");
+  const tabela = document.getElementById("tabelaContainer");
+  const ranking = document.getElementById("rankingContainer");
+  if (tabela && ranking) {
+    ranking.classList.add("hidden");
+    tabela.classList.remove("hidden");
+    ranking.style.display = "none";
+    tabela.style.display = "block";
+  }
 });
+
 
 document.body.addEventListener("click", (e) => {
   if (e.target.classList.contains("delete")) {
