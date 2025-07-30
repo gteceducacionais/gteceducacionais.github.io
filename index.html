@@ -1,4 +1,3 @@
-<!-- index.html atualizado -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -79,26 +78,38 @@
       }
 
       if (tipo === "Administrador") {
-        if (usuario === "Admin" && senha === "admin@124") {
+        const adminSnapshot = await getDocs(collection(db, "administradores"));
+        let autorizado = false;
+
+        adminSnapshot.forEach((doc) => {
+          const data = doc.data();
+          if (data.usuario === usuario && data.senha === senha) {
+            autorizado = true;
+          }
+        });
+
+        if (autorizado) {
           window.location.href = "painel-administrador.html";
         } else {
           alert("Usuário ou senha de administrador incorretos.");
         }
+
       } else {
         const querySnapshot = await getDocs(collection(db, "avaliadores"));
-        let encontrado = false;
-
-        // loop desnecessário removido
-
         let redirecionado = false;
-querySnapshot.forEach((doc) => {
-  const data = doc.data();
-  if (!redirecionado && data.usuario === usuario && data.senha === senha) {
-    redirecionado = true;
-    localStorage.setItem("avaliadorLogado", usuario);
-    window.location.href = "avaliador.html";
-  }
-});
+
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          if (!redirecionado && data.usuario === usuario && data.senha === senha) {
+            redirecionado = true;
+            localStorage.setItem("avaliadorLogado", usuario);
+            window.location.href = "avaliador.html";
+          }
+        });
+
+        if (!redirecionado) {
+          alert("Usuário ou senha de avaliador incorretos.");
+        }
       }
     });
   </script>
