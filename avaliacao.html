@@ -23,65 +23,89 @@
     <div><strong>Avaliador:</strong> <span id="avaliador"></span></div>
   </div>
 
+  <section>
+    <h2>Vídeo do Projeto</h2>
+    <div id="video-container">
+      <iframe 
+        class="absolute top-0 left-0 w-full h-full"
+        src="https://www.youtube.com/embed/${videoId}"
+        frameborder="0"
+        allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen>
+      </iframe>
+    </div>
+  </section>
+
   <div class="container">
     <form id="form-avaliacao">
+      <!-- Seção 1 - MATERIAL ESCRITO -->
       <section>
-        <h2>Seção 1 – Apresentação do Material Escrito</h2>
-        <label>1.1 Banner 
-          <input type="range" name="criterio1" min="1" max="5" value="1" required />
-          <span id="valor1" class="valor">1</span>
+        <h2>1. MATERIAL ESCRITO</h2>
+        <label>1.1. BANNER 
+          <input type="range" name="criterio1" min="0" max="5" value="0" required />
+          <span id="valor1" class="valor">0</span>
         </label>
-        <label>1.2 Caderno de campo 
-          <input type="range" name="criterio2" min="1" max="5" value="1" required />
-          <span id="valor2" class="valor">1</span>
+        <label>1.2. PROJETO NA INTEGRA 
+          <input type="range" name="criterio2" min="0" max="5" value="0" required />
+          <span id="valor2" class="valor">0</span>
         </label>
-        <p><strong>Total:</strong> <span id="total1">2</span></p>
-      </section>
-      <section>
-        <h2>Seção 2 – Apresentação Oral</h2>
-        <label>2.1 Clareza, concisão e objetividade 
-          <input type="range" name="criterio3" min="1" max="5" value="1" required />
-          <span id="valor3" class="valor">1</span>
+        <label>1.3. DIÁRIO DE BORDO (Criatividade e Organização)
+          <input type="range" name="criterio3" min="0" max="5" value="0" required />
+          <span id="valor3" class="valor">0</span>
         </label>
-        <label>2.2 Capacidade de responder perguntas 
-          <input type="range" name="criterio4" min="1" max="5" value="1" required />
-          <span id="valor4" class="valor">1</span>
-        </label>
-        <label>2.3 Atitude cordial e atenção ao visitante 
-          <input type="range" name="criterio5" min="1" max="5" value="1" required />
-          <span id="valor5" class="valor">1</span>
-        </label>
-        <p><strong>Total:</strong> <span id="total2">3</span></p>
-      </section>
-      <section>
-        <h2>Seção 3 – Desenvolvimento do Trabalho</h2>
-        <label>3.1 Questão central bem definida 
-          <input type="range" name="criterio6" min="1" max="5" value="1" required />
-          <span id="valor6" class="valor">1</span>
-        </label>
-        <label>3.2 Coleta de dados e conclusão coerente 
-          <input type="range" name="criterio7" min="1" max="5" value="1" required />
-          <span id="valor7" class="valor">1</span>
-        </label>
-        <label>3.3 Trabalho em equipe 
-          <input type="range" name="criterio8" min="1" max="5" value="1" required />
-          <span id="valor8" class="valor">1</span>
-        </label>
-        <p><strong>Total:</strong> <span id="total3">3</span></p>
+        <p><strong>Total:</strong> <span id="total1">0</span></p>
       </section>
 
+      <!-- Seção 2 - APRESENTAÇÃO ORAL -->
+      <section>
+        <h2>2. APRESENTAÇÃO ORAL</h2>
+        <label>2.1. APRESENTAÇÃO DE FORMA CLARA E OBJETIVA 
+          <input type="range" name="criterio4" min="0" max="5" value="0" required />
+          <span id="valor4" class="valor">0</span>
+        </label>
+        <label>2.2. SEGURANÇA E DOMÍNIO DE CONTEÚDO
+          <input type="range" name="criterio5" min="0" max="5" value="0" required />
+          <span id="valor5" class="valor">0</span>
+        </label>
+        <label>2.3. DESENVOLTURA E APRESENTAÇÃO DA EQUIPE
+          <input type="range" name="criterio6" min="0" max="5" value="0" required />
+          <span id="valor6" class="valor">0</span>
+        </label>
+        <p><strong>Total:</strong> <span id="total2">0</span></p>
+      </section>
+
+      <!-- Seção 3 - DESENVOLVIMENTO DO TRABALHO -->
+      <section>
+        <h2>3. DESENVOLVIMENTO DO TRABALHO</h2>
+        <label>3.1. PRESENÇA DE UMA QUESTÃO CENTRAL
+          <input type="range" name="criterio7" min="0" max="5" value="0" required />
+          <span id="valor7" class="valor">0</span>
+        </label>
+        <label>3.2. O PROJETO PROPÕE UMA SOLUÇÃO VIÁVEL
+          <input type="range" name="criterio8" min="0" max="5" value="0" required />
+          <span id="valor8" class="valor">0</span>
+        </label>
+        <label>3.3. O PROJETO DE PESQUISA SEGUIU AS ETAPAS DO MÉTODO CIENTÍFICO
+          <input type="range" name="criterio9" min="0" max="5" value="0" required />
+          <span id="valor9" class="valor">0</span>
+        </label>
+        <p><strong>Total:</strong> <span id="total3">0</span></p>
+      </section>
+
+      <!-- Resumo -->
       <div class="resumo-container" style="padding:16px; border-radius:10px; margin-top:24px;">
         <h3>Resumo da Avaliação</h3>
         <div class="resumo-grid" style="display:flex; flex-wrap:wrap; gap:12px; margin-top:12px;">
-          <div class="resumo-item" style="flex:1; padding:16px; border-radius:8px; text-align:center;">Seção 1 <span id="r1" style="display:block; font-size:20px; font-weight:bold; color:#2563eb;">2</span></div>
-          <div class="resumo-item" style="flex:1; padding:16px; border-radius:8px; text-align:center;">Seção 2 <span id="r2" style="display:block; font-size:20px; font-weight:bold; color:#2563eb;">3</span></div>
-          <div class="resumo-item" style="flex:1; padding:16px; border-radius:8px; text-align:center;">Seção 3 <span id="r3" style="display:block; font-size:20px; font-weight:bold; color:#2563eb;">3</span></div>
+          <div class="resumo-item" style="flex:1; padding:16px; border-radius:8px; text-align:center;">Seção 1 <span id="r1" style="display:block; font-size:20px; font-weight:bold; color:#2563eb;">0</span></div>
+          <div class="resumo-item" style="flex:1; padding:16px; border-radius:8px; text-align:center;">Seção 2 <span id="r2" style="display:block; font-size:20px; font-weight:bold; color:#2563eb;">0</span></div>
+          <div class="resumo-item" style="flex:1; padding:16px; border-radius:8px; text-align:center;">Seção 3 <span id="r3" style="display:block; font-size:20px; font-weight:bold; color:#2563eb;">0</span></div>
         </div>
         <div class="total-geral-box" style="margin-top:16px; padding:12px 24px; border-radius:8px; font-weight:bold; display:flex; justify-content:space-between; font-size:16px; color:#1e3a8a;">
-          TOTAL GERAL <span id="total" style="color:#2563eb; font-size:22px;">8</span>
+          TOTAL GERAL <span id="total" style="color:#2563eb; font-size:22px;">0</span>
         </div>
       </div>
 
+      <!-- Comentário -->
       <label>Comentário</label>
       <textarea name="comentario" rows="4"></textarea>
 
@@ -103,9 +127,9 @@
 
     function atualizarTotais() {
       const criterio = n => parseInt(document.querySelector(`[name="criterio${n}"]`).value);
-      const total1 = criterio(1) + criterio(2);
-      const total2 = criterio(3) + criterio(4) + criterio(5);
-      const total3 = criterio(6) + criterio(7) + criterio(8);
+      const total1 = criterio(1) + criterio(2) + criterio(3);
+      const total2 = criterio(4) + criterio(5) + criterio(6);
+      const total3 = criterio(7) + criterio(8) + criterio(9);
       const totalGeral = total1 + total2 + total3;
       document.getElementById("total1").textContent = total1;
       document.getElementById("total2").textContent = total2;
@@ -153,9 +177,10 @@
         criterio6: get("criterio6"),
         criterio7: get("criterio7"),
         criterio8: get("criterio8"),
+        criterio9: get("criterio9"),
         comentario: this.querySelector("[name='comentario']").value.trim(),
         criadoEm: new Date().toISOString(),
-        nota: [1,2,3,4,5,6,7,8].map(n => get("criterio"+n)).reduce((a,b)=>a+b, 0)
+        nota: [1,2,3,4,5,6,7,8,9].map(n => get("criterio"+n)).reduce((a,b)=>a+b, 0)
       };
       try {
         await db.collection("avaliacoes").add(avaliacao);
@@ -184,6 +209,79 @@
         body.classList.add("dark-mode");
         icone.className = "fa-solid fa-sun";
       }
+	  
+		window.onload = () => {
+	  carregarProjeto();
+	};
+
+	async function carregarProjeto() {
+	  const dados = JSON.parse(localStorage.getItem("avaliacaoAtual"));
+	  console.log('Dados do localStorage:', dados); // Verifique no console
+	  
+	  if (!dados || !dados.projeto) {
+		alert("Dados do projeto não encontrados!");
+		return;
+	  }
+
+	  try {
+		const querySnapshot = await db.collection("projetos")
+		  .where("nome", "==", dados.projeto)
+		  .get();
+
+		if (!querySnapshot.empty) {
+		  const projetoDoc = querySnapshot.docs[0];
+		  const projetoData = projetoDoc.data();
+		  console.log('Dados do projeto:', projetoData); // Verificando os dados do projeto retornados
+
+		  const linkVideo = projetoData.link_video;
+
+		  // Exibir os dados do projeto na tela
+		  document.getElementById("projeto").textContent = dados.projeto;
+		  document.getElementById("escola").textContent = dados.escola;
+		  document.getElementById("nivel").textContent = dados.nivel;
+
+		  const nomeAvaliador = dados && dados.nome ? dados.nome : "Nome não encontrado";
+			document.getElementById("avaliador").textContent = nomeAvaliador;
+
+
+		  const videoContainer = document.getElementById("video-container");
+
+		  if (linkVideo) {
+			const videoId = extract_video_id(linkVideo);
+			console.log('ID do vídeo extraído:', videoId);
+
+			if (videoId) {
+			  videoContainer.innerHTML = `
+				<div class="flex justify-center">
+				  <div class="relative" style="width: 100%; padding-top: 56.25%; height: 0;">
+					<iframe 
+					  class="absolute top-0 left-0 w-full h-full"
+					  src="https://www.youtube.com/embed/${videoId}"
+					  frameborder="0"
+					  allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+					  allowfullscreen>
+					</iframe>
+				  </div>
+				</div>`;
+			} else {
+			  videoContainer.innerHTML = "<p>Link de vídeo inválido.</p>";
+			}
+		  } else {
+			videoContainer.innerHTML = "<p>Este projeto não possui vídeo disponível.</p>";
+		  }
+		} else {
+		  console.log("Projeto não encontrado!");
+		}
+	  } catch (err) {
+		console.error("Erro ao carregar projeto:", err);
+	  }
+	}
+
+	function extract_video_id(url) {
+	  const regex = /(?:youtube\.com(?:\/[^\/]+\/.+\/|\/(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/i;
+	  const match = url.match(regex);
+	  return match ? match[1] : null;
+	}
     });
   </script>
 </body>
