@@ -148,17 +148,80 @@
       });
     });
 
-    const dados = JSON.parse(localStorage.getItem("avaliacaoAtual"));
-    if (!dados || !dados.projeto || !dados.avaliador) {
-      alert("Acesso não autorizado. Inicie uma avaliação pelo painel.");
-      window.location.href = "avaliador.html";
-    }
+	async function carregarProjeto() {
+  const dados = JSON.parse(localStorage.getItem("avaliacaoAtual"));
+  console.log('Dados do localStorage:', dados); // Verifique os dados no console
 
-    const nomeAvaliador = dados.nomeAvaliador || localStorage.getItem("avaliadorNome") || dados.avaliador;
-    document.getElementById("projeto").textContent = dados.projeto;
-    document.getElementById("escola").textContent = dados.escola;
-    document.getElementById("nivel").textContent = dados.nivel;
-    document.getElementById("avaliador").textContent = nomeAvaliador;
+  if (!dados || !dados.projeto) {
+    alert("Dados do projeto não encontrados!");
+    return;
+  }
+
+  try {
+    // Buscar dados do projeto na coleção "projetos"
+    const querySnapshot = await db.collection("projetos")
+      .where("nome", "==", dados.projeto)
+      .get();
+
+    if (!querySnapshot.empty) {
+      const projetoDoc = querySnapshot.docs[0];
+      const projetoData = projetoDoc.data();
+      console.log('Dados do projeto:', projetoData); // Verificando os dados do projeto retornados
+
+      // Exibir os dados do projeto na tela
+      document.getElementById("projeto").textContent = projetoData.nome;
+      document.getElementById("escola").textContent = projetoData.escola;
+      document.getElementById("nivel").textContent = projetoData.nivel;
+
+      // Exibir o nome do avaliador diretamente do localStorage
+      const nomeAvaliador = dados.avaliador || "Nome não encontrado"; // Recupera o nome diretamente do localStorage
+      console.log('Nome do avaliador:', nomeAvaliador); // Verifique se o nome está correto
+      document.getElementById("avaliador").textContent = nomeAvaliador;
+
+      // Carregar o vídeo se houver
+      const linkVideo = projetoData.link_video;
+      const videoContainer = document.getElementById("video-container");
+
+      if (linkVideo) {
+        const videoId = extract_video_id(linkVideo);
+        console.log('ID do vídeo extraído:', videoId);
+
+        if (videoId) {
+          videoContainer.innerHTML = `
+            <div class="flex justify-center">
+              <div class="relative" style="width: 100%; padding-top: 56.25%; height: 0;">
+                <iframe 
+                  class="absolute top-0 left-0 w-full h-full"
+                  src="https://www.youtube.com/embed/${videoId}?rel=0&showinfo=0"
+                  frameborder="0"
+                  allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                  allowfullscreen>
+                </iframe>
+              </div>
+            </div>`;
+        } else {
+          videoContainer.innerHTML = "<p>Link de vídeo inválido.</p>";
+        }
+      } else {
+        videoContainer.innerHTML = "<p>Este projeto não possui vídeo disponível.</p>";
+      }
+    } else {
+      console.log("Projeto não encontrado!");
+    }
+  } catch (err) {
+    console.error("Erro ao carregar projeto:", err);
+  }
+}
+
+// Função para extrair o ID do vídeo do YouTube
+function extract_video_id(url) {
+  const regex = /(?:youtube\.com(?:\/[^\/]+\/.+\/|\/(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/i;
+  const match = url.match(regex);
+  return match ? match[1] : null;
+}
+
+// Chama a função ao carregar a página
+window.onload = carregarProjeto;
 
     document.getElementById("form-avaliacao").addEventListener("submit", async function (e) {
       e.preventDefault();
@@ -209,79 +272,6 @@
         body.classList.add("dark-mode");
         icone.className = "fa-solid fa-sun";
       }
-	  
-		window.onload = () => {
-	  carregarProjeto();
-	};
-
-	async function carregarProjeto() {
-	  const dados = JSON.parse(localStorage.getItem("avaliacaoAtual"));
-	  console.log('Dados do localStorage:', dados); // Verifique no console
-	  
-	  if (!dados || !dados.projeto) {
-		alert("Dados do projeto não encontrados!");
-		return;
-	  }
-
-	  try {
-		const querySnapshot = await db.collection("projetos")
-		  .where("nome", "==", dados.projeto)
-		  .get();
-
-		if (!querySnapshot.empty) {
-		  const projetoDoc = querySnapshot.docs[0];
-		  const projetoData = projetoDoc.data();
-		  console.log('Dados do projeto:', projetoData); // Verificando os dados do projeto retornados
-
-		  const linkVideo = projetoData.link_video;
-
-		  // Exibir os dados do projeto na tela
-		  document.getElementById("projeto").textContent = dados.projeto;
-		  document.getElementById("escola").textContent = dados.escola;
-		  document.getElementById("nivel").textContent = dados.nivel;
-
-		  const nomeAvaliador = dados && dados.nome ? dados.nome : "Nome não encontrado";
-			document.getElementById("avaliador").textContent = nomeAvaliador;
-
-
-		  const videoContainer = document.getElementById("video-container");
-
-		  if (linkVideo) {
-			const videoId = extract_video_id(linkVideo);
-			console.log('ID do vídeo extraído:', videoId);
-
-			if (videoId) {
-			  videoContainer.innerHTML = `
-				<div class="flex justify-center">
-				  <div class="relative" style="width: 100%; padding-top: 56.25%; height: 0;">
-					<iframe 
-					  class="absolute top-0 left-0 w-full h-full"
-					  src="https://www.youtube.com/embed/${videoId}"
-					  frameborder="0"
-					  allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-					  allowfullscreen>
-					</iframe>
-				  </div>
-				</div>`;
-			} else {
-			  videoContainer.innerHTML = "<p>Link de vídeo inválido.</p>";
-			}
-		  } else {
-			videoContainer.innerHTML = "<p>Este projeto não possui vídeo disponível.</p>";
-		  }
-		} else {
-		  console.log("Projeto não encontrado!");
-		}
-	  } catch (err) {
-		console.error("Erro ao carregar projeto:", err);
-	  }
-	}
-
-	function extract_video_id(url) {
-	  const regex = /(?:youtube\.com(?:\/[^\/]+\/.+\/|\/(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/i;
-	  const match = url.match(regex);
-	  return match ? match[1] : null;
-	}
     });
   </script>
 </body>
