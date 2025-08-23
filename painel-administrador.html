@@ -139,31 +139,42 @@
 </div>
 
   <div class="content">
-    <div class="card aba hidden" id="aba-projetos">
-      <h3 style="color: #1e3a8a">Projetos Cadastrados</h3>
-      <table>
-        <thead><tr><th>Projeto</th><th>Área</th><th>Escola</th><th>Nível</th><th>Ações</th></tr></thead>
-        <tbody id="tabela-projetos"></tbody>
-      </table>
-      <div class="form-grid">
-        <input type="text" id="tituloProjeto" placeholder="Título do projeto" />
-        <select id="areaProjeto">
-          <option value="Linguagens e Códigos">Linguagens e Códigos</option>
-          <option value="Ciências da Natureza">Ciências da Natureza</option>
-          <option value="Ciências Humanas">Ciências Humanas</option>
-          <option value="Matemática">Matemática</option>
-        </select>
-        <input type="text" id="escolaProjeto" placeholder="Escola" />
-        <select id="nivelProjeto">
-          <option value="I">Nível I (1º ao 5º ano)</option>
-          <option value="II">Nível II (6º ao 9º ano)</option>
-          <option value="III">Nível III (EJA)</option>
-          <option value="IV">Nível IV (Ceará Científico)</option>
-        </select>
-      </div>
-      <button class="btn" id="btnAdicionarProjeto">Adicionar Projeto</button>
+  <div class="card aba hidden" id="aba-projetos">
+    <h3 style="color: #1e3a8a">Projetos Cadastrados</h3>
+    <table>
+      <!-- Títulos das Colunas -->
+      <thead>
+        <tr>
+          <th>PROJETO</th>
+          <th>ÁREA</th>
+          <th>ESCOLA</th>
+          <th>NÍVEL</th>
+          <th>LINK</th> <!-- Adicionando título para o link -->
+          <th>AÇÕES</th>
+        </tr>
+      </thead>
+      <tbody id="tabela-projetos"></tbody>
+    </table>
+    <div class="form-grid">
+      <input type="text" id="tituloProjeto" placeholder="Título do projeto" />
+      <select id="areaProjeto">
+        <option value="Linguagens e Códigos">Linguagens e Códigos</option>
+        <option value="Ciências da Natureza">Ciências da Natureza</option>
+        <option value="Ciências Humanas">Ciências Humanas</option>
+        <option value="Matemática">Matemática</option>
+      </select>
+      <input type="text" id="escolaProjeto" placeholder="Escola" />
+      <select id="nivelProjeto">
+        <option value="I">Nível I (1º ao 5º ano)</option>
+        <option value="II">Nível II (6º ao 9º ano)</option>
+        <option value="III">Nível III (EJA)</option>
+        <option value="IV">Nível IV (Ceará Científico)</option>
+      </select>
+      <input type="url" id="linkProjeto" placeholder="Cole o link do vídeo do YouTube" />
     </div>
+    <button class="btn" id="btnAdicionarProjeto">Adicionar Projeto</button>
   </div>
+</div>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
@@ -185,13 +196,32 @@ document.getElementById("btnAdicionarProjeto")?.addEventListener("click", async 
   const escola = document.getElementById("escolaProjeto").value.trim();
   const nivel = document.getElementById("nivelProjeto").value.trim();
   const area = document.getElementById("areaProjeto").value.trim();
-  if (!titulo || !escola || !nivel || !area) return alert("Preencha todos os campos.");
-  await addDoc(collection(db, "projetos"), { nome: titulo, escola, nivel, area });
-  document.getElementById("tituloProjeto").value = "";
-  document.getElementById("escolaProjeto").value = "";
-  document.getElementById("nivelProjeto").value = "";
-  document.getElementById("areaProjeto").value = "";
-  carregarProjetos();
+  const link = document.getElementById("linkProjeto").value.trim(); // Novo campo para link
+  
+  // Verifique se todos os campos estão preenchidos, incluindo o link
+  if (!titulo || !escola || !nivel || !area || !link) return alert("Preencha todos os campos.");
+
+  // Agora estamos incluindo o 'link_video' no campo Firebase
+  try {
+    await addDoc(collection(db, "projetos"), { 
+      nome: titulo, 
+      escola, 
+      nivel, 
+      area, 
+      link_video: link // Link sendo passado para o Firebase
+    });
+
+    document.getElementById("tituloProjeto").value = "";
+    document.getElementById("escolaProjeto").value = "";
+    document.getElementById("nivelProjeto").value = "";
+    document.getElementById("areaProjeto").value = "";
+    document.getElementById("linkProjeto").value = ""; // Limpar o campo de link
+
+    carregarProjetos(); // Recarregar a lista de projetos
+  } catch (error) {
+    console.error("Erro ao adicionar projeto:", error);
+    alert("Houve um erro ao salvar o projeto.");
+  }
 });
 
 document.getElementById("btnAdicionarAvaliador")?.addEventListener("click", async () => {
@@ -220,12 +250,19 @@ async function carregarAvaliadores() {
 
 async function carregarProjetos() {
   const tabela = document.getElementById("tabela-projetos");
-  tabela.innerHTML = "";
+  tabela.innerHTML = ""; // Limpar a tabela antes de carregar novos projetos
   const snapshot = await getDocs(collection(db, "projetos"));
   snapshot.forEach(doc => {
     const data = doc.data();
     const tr = document.createElement("tr");
-    tr.innerHTML = `<td>${data.nome}</td><td>${data.area}</td><td>${data.escola}</td><td>${data.nivel}</td><td><span class="delete" data-id="${doc.id}" data-tipo="projeto">🗑️</span></td>`;
+    tr.innerHTML = `
+      <td>${data.nome}</td>
+      <td>${data.area}</td>
+      <td>${data.escola}</td>
+      <td>${data.nivel}</td>
+      <td><a href="${data.link_video}" target="_blank">Ver vídeo</a></td> <!-- Adicionando o link do vídeo -->
+      <td><span class="delete" data-id="${doc.id}" data-tipo="projeto">🗑️</span></td>
+    `;
     tabela.appendChild(tr);
   });
 }
