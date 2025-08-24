@@ -24,6 +24,7 @@ body {
   padding: 32px;
   border-radius: 10px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  /* Garante que o conteúdo da .container não seja sobreposto */
 }
 
 h1, h2, h3 {
@@ -237,12 +238,13 @@ body.dark-mode .resumo-item span {
 * {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
-
 #video-container {
   position: relative;
   width: 100%;
-  padding-top: 56.25%; /* Isso mantém a proporção 16:9 */
+  padding-top: 56.25%; /* Mantém a proporção 16:9 */
   height: 0;
+  margin-bottom: 20px; /* Cria espaço entre o vídeo e o formulário */
+  overflow: hidden; /* Garante que o vídeo não ultrapasse os limites do contêiner */
 }
 
 #video-container iframe {
@@ -251,4 +253,11 @@ body.dark-mode .resumo-item span {
   left: 0;
   width: 100%;
   height: 100%;
+  display: block; /* Garante que o iframe seja tratado como bloco e ocupe todo o espaço */
 }
+
+form {
+  /* Certifique-se de que o formulário tem o layout correto e não sobreponha outros elementos */
+  margin-top: 20px;
+}
+
